@@ -1,0 +1,35 @@
+# Publica a pasta site/ na Hostinger sempre que houver push na branch main.
+# Credenciais ficam nos Secrets do GitHub (Settings > Secrets and variables > Actions):
+#   FTP_SERVER, FTP_USERNAME, FTP_PASSWORD
+name: Publicar na Hostinger
+
+on:
+  push:
+    branches: [main]
+    paths: ['site/**']
+  workflow_dispatch:   # permite rodar manualmente pela aba Actions
+
+concurrency:
+  group: deploy-hostinger
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Enviar a pasta site/ para public_html/
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./site/
+          server-dir: ./     # a conta FTP "deploy" já começa dentro de public_html
+          exclude: |
+            **/.git*
+            **/.git*/**

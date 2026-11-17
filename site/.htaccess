@@ -24,7 +24,7 @@ ErrorDocument 404 /404.html
   RewriteRule ^(.+?)/?$ $1.html [L]
 
   # Bloqueia arquivos internos
-  RewriteRule ^(supabase|LEIA-ME\.md) - [F,L,NC]
+  RewriteRule ^(supabase|LEIA-ME\.md|\.ftp-deploy-sync-state\.json|_headers) - [F,L,NC]
 </IfModule>
 
 <IfModule mod_headers.c>

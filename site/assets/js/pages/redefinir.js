@@ -37,7 +37,7 @@ const fail = (text) => {
       const { error } = await sb.auth.updateUser({ password: form.password.value });
       if (error) return msg(authErrorPT(error));
       if (form.global.checked) await sb.auth.signOut({ scope: 'others' });
-      toast('Senha alterada com sucesso! 🔒');
+      toast('Senha alterada.');
       form.hidden = true;
       state.innerHTML = `<p class="notice notice-info">${icon('checkCircle')}<span>Pronto! Sua nova senha já está valendo.</span></p>
         <a class="btn btn-ink btn-block" href="conta.html">Ir para minha conta ${icon('arrowRight')}</a>`;

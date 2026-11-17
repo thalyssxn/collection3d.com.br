@@ -9,12 +9,12 @@ export const CONFIG = {
   // Supabase > Project Settings > API: copie "Project URL" e a chave
   // "anon / publishable". Essa chave é pública por natureza (a segurança
   // vem das regras RLS do schema.sql). NUNCA coloque aqui a "service_role".
-  supabaseUrl: '',          // ex.: 'https://abcdxyz.supabase.co'
-  supabaseAnonKey: '',      // ex.: 'eyJhbGciOi...' ou 'sb_publishable_...'
+  supabaseUrl: 'https://jeemudvwzqsongkpomet.supabase.co',
+  supabaseAnonKey: 'sb_publishable_Rxcu9qPMA546lV9KUOgCAw_X0ZBW1Eh',
 
   // Login social: deixe true só depois de configurar no Supabase.
-  enableGoogle: true,
-  enableApple: true,        // exige conta Apple Developer (paga)
+  enableGoogle: true,        // login com Google ativo
+  enableApple: false,       // exige conta Apple Developer (paga)
   otpLength: 6,             // tamanho do código enviado por e-mail
 
   // --- Contato ---------------------------------------------------------
@@ -29,7 +29,7 @@ export const CONFIG = {
   tiktokUrl: 'https://www.tiktok.com/@collection_3d',
   // TODO: cole aqui o link da sua loja na Shopee
   // (App Shopee > Minha loja > Compartilhar > Copiar link)
-  shopeeUrl: 'https://shopee.com.br/search?keyword=collection%203D',
+  shopeeUrl: 'https://shopee.com.br/thalyssxn',
 
   // Números mostrados no site (atualize quando quiser)
   shopeeRating: '4,9',
@@ -42,8 +42,8 @@ export const CONFIG = {
 
   // --- Dados legais (LGPD / rodapé) -----------------------------------
   // Preencha com os dados do seu MEI. Se ficar vazio, não aparece no site.
-  razaoSocial: '',          // ex.: '12.345.678 THALYSSON ...'
-  cnpj: '',                 // ex.: '12.345.678/0001-90'
+  razaoSocial: '64.549.954 THALYSSON SERGIO FERNANDES SOARES',          // ex.: '12.345.678 THALYSSON ...'
+  cnpj: '64.549.954/0001-30',                 // ex.: '12.345.678/0001-90'
   cidadeUf: '',             // ex.: 'São Miguel Arcanjo/SP'
 
   // Versão dos Termos/Política. Mude a data quando alterar os textos:

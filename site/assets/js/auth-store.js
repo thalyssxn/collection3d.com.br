@@ -1,7 +1,8 @@
 import { getSupabase } from './supa.js';
 
 /** Estado de login compartilhado por todas as páginas */
-export const auth = { ready: false, session: null, user: null, profile: null, admin: false };
+export const auth = { ready: false, session: null, user: null, profile: null, admin: false, adminAccount: false };
+export const PROFILE_COLS = 'id,full_name,phone,marketing_opt_in,is_adult_declared,terms_version,accepted_terms_at,blocked,created_at,updated_at';
 const listeners = new Set();
 let started = false;
 
@@ -17,13 +18,16 @@ async function load(sb, session) {
   auth.user = session?.user ?? null;
   auth.profile = null;
   auth.admin = false;
+  auth.adminAccount = false;
   if (auth.user) {
-    const [{ data: profile }, { data: admin }] = await Promise.all([
-      sb.from('profiles').select('*').eq('id', auth.user.id).maybeSingle(),
+    const [{ data: profile }, { data: admin }, { data: adminAccount }] = await Promise.all([
+      sb.from('profiles').select(PROFILE_COLS).eq('id', auth.user.id).maybeSingle(),
       sb.rpc('is_admin'),
+      sb.rpc('is_admin_account'),
     ]);
     auth.profile = profile;
-    auth.admin = !!admin;
+    auth.admin = !!admin;            // admin com 2FA confirmado nesta sessão
+    auth.adminAccount = !!adminAccount; // é conta de admin (pode faltar o 2FA)
   }
   auth.ready = true;
   emit();
@@ -46,7 +50,7 @@ export async function initAuth() {
 export async function refreshProfile() {
   const sb = await getSupabase();
   if (!sb || !auth.user) return;
-  const { data } = await sb.from('profiles').select('*').eq('id', auth.user.id).maybeSingle();
+  const { data } = await sb.from('profiles').select(PROFILE_COLS).eq('id', auth.user.id).maybeSingle();
   auth.profile = data; emit();
 }
 

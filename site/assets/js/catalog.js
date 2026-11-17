@@ -40,33 +40,27 @@ export async function fetchProducts() {
   return (cache = data);
 }
 
-/** Arte de capa: foto do produto ou ilustração com "camadas" na cor da categoria */
-export function productArt(p, size = 'card') {
+/** Capa do produto: foto, ou um espaço neutro com a marca enquanto a foto não chega */
+export function productArt(p) {
   const img = safeUrl(p.image_url);
-  const c = catOf(p.category);
   if (img) return `<div class="p-art has-img"><img src="${esc(img)}" alt="${esc(p.name)}" loading="lazy" decoding="async"></div>`;
-  return `<div class="p-art hue-${c.hue} ${size === 'big' ? 'p-art-big' : ''}" aria-hidden="true">
-    <span class="p-art-layers"></span>
-    <span class="p-art-token">${icon(c.ic)}</span>
-    <span class="p-art-name">${esc(p.name.split(' ').slice(0, 2).join(' '))}</span>
-  </div>`;
+  return `<div class="p-art p-art-empty" aria-hidden="true"><img class="p-ph" src="assets/img/mark-192.png" alt="" width="192" height="192"><span class="p-ph-label">Foto em breve</span></div>`;
 }
 
 export function productCard(p) {
   const c = catOf(p.category);
   return `
-  <article class="p-card" data-reveal data-tilt="6" data-slug="${esc(p.slug)}">
+  <article class="p-card" data-slug="${esc(p.slug)}">
     <button class="p-open" aria-label="Ver detalhes de ${esc(p.name)}">
       ${productArt(p)}
       ${p.badge ? `<span class="p-badge">${esc(p.badge)}</span>` : ''}
     </button>
     <div class="p-info">
-      <span class="p-cat">${icon(c.ic)} ${esc(c.label)}</span>
+      <span class="p-cat">${esc(c.label)}</span>
       <h3 class="p-name">${esc(p.name)}</h3>
-      ${p.price != null ? `<p class="p-price">${fmtPrice(p.price)}</p>` : `<p class="p-price p-price-ask">Consulte o valor</p>`}
+      ${p.price != null ? `<p class="p-price">${fmtPrice(p.price)}</p>` : `<p class="p-price p-price-ask">Preço sob consulta</p>`}
       <div class="p-actions">
-        <a class="btn btn-wa btn-sm" data-buy="${esc(p.slug)}" href="${esc(waLink(buyMessage(p, 1)))}" target="_blank" rel="noopener">${icon('whatsapp')}<span>Adquirir</span></a>
-        <button class="btn btn-ghost btn-sm p-more" aria-label="Detalhes de ${esc(p.name)}">${icon('eye')}<span>Detalhes</span></button>
+        <a class="btn btn-sm" data-buy="${esc(p.slug)}" href="${esc(waLink(buyMessage(p, 1)))}" target="_blank" rel="noopener">${icon('whatsapp')}<span>Adquirir</span></a>
       </div>
     </div>
   </article>`;
@@ -74,7 +68,7 @@ export function productCard(p) {
 
 export function buyMessage(p, qty = 1, code = null) {
   return [
-    'Olá, Collection 3D! 🐢',
+    'Olá, Collection 3D!',
     `Tenho interesse em: *${p.name}*${qty > 1 ? ` (quantidade: ${qty})` : ''}`,
     code ? `Código do pedido: #${code}` : null,
     'Vi no site collection3d.com.br',
@@ -93,7 +87,7 @@ export function prepareBuy(anchor, p, qty = 1) {
       code, user_id: auth.user.id, product_id: p.id || null, product_name: p.name.slice(0, 160), quantity: qty,
     });
     if (error) console.warn(error);
-    else toast(`Pedido #${code} registrado em Meus pedidos. Finalize no WhatsApp!`);
+    else toast(`Pedido #${code} registrado em Meus pedidos. Finalize a compra no WhatsApp.`);
   });
 }
 
@@ -102,11 +96,11 @@ export function openProduct(p) {
   const shopee = safeUrl(p.shopee_url), tiktok = safeUrl(p.tiktok_url);
   const m = modal(`
     <div class="pm">
-      <div class="pm-art">${productArt(p, 'big')}${p.badge ? `<span class="p-badge">${esc(p.badge)}</span>` : ''}</div>
+      <div class="pm-art">${productArt(p)}${p.badge ? `<span class="p-badge">${esc(p.badge)}</span>` : ''}</div>
       <div class="pm-info">
-        <span class="p-cat">${icon(c.ic)} ${esc(c.label)}</span>
+        <span class="p-cat">${esc(c.label)}</span>
         <h2 class="pm-title">${esc(p.name)}</h2>
-        ${p.price != null ? `<p class="pm-price">${fmtPrice(p.price)}</p>` : `<p class="pm-price p-price-ask">Valor sob consulta no WhatsApp</p>`}
+        ${p.price != null ? `<p class="pm-price">${fmtPrice(p.price)}</p>` : `<p class="pm-price p-price-ask">Preço sob consulta pelo WhatsApp</p>`}
         <p class="pm-desc">${esc(p.description || '')}</p>
         <div class="qty" role="group" aria-label="Quantidade">
           <button type="button" class="icon-btn" data-q="-1" aria-label="Diminuir">−</button>

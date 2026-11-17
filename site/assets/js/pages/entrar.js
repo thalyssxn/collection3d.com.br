@@ -94,7 +94,7 @@ panels.login.addEventListener('submit', async (e) => {
       if (error.code === 'email_not_confirmed') { pendingEmail = email; }
       return;
     }
-    toast('Bem-vindo(a) de volta! 🐢');
+    toast('Login feito.');
   });
 });
 
@@ -138,7 +138,7 @@ panels.signup.addEventListener('submit', async (e) => {
     if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
       return msg(f, 'Este e-mail já tem cadastro. Entre ou use "Esqueci minha senha".');
     }
-    if (data.session) { toast('Conta criada! 🎉'); return; } // confirmação de e-mail desativada
+    if (data.session) { toast('Conta criada.'); return; } // confirmação de e-mail desativada
     pendingEmail = email;
     $$('.em-target').forEach((x) => (x.textContent = email));
     show('confirm');
@@ -153,7 +153,7 @@ panels.confirm.addEventListener('submit', async (e) => {
   await withLoading($('[type=submit]', f), async () => {
     const { error } = await sb.auth.verifyOtp({ email: pendingEmail, token, type: 'signup' });
     if (error) return msg(f, authErrorPT(error));
-    toast('E-mail confirmado! Bem-vindo(a) 🐢');
+    toast('E-mail confirmado.');
   });
 });
 
@@ -192,7 +192,7 @@ panels.code.addEventListener('submit', async (e) => {
   await withLoading(btn, async () => {
     const { error } = await sb.auth.verifyOtp({ email: codeEmail, token, type: 'email' });
     if (error) return msg(f, authErrorPT(error));
-    toast('Login feito com sucesso! 🐢');
+    toast('Login feito.');
   });
 });
 

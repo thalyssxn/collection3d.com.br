@@ -43,9 +43,9 @@ form.addEventListener('submit', async (e) => {
     const sb = await getSupabase();
     if (!sb) return show('Prévia: a lista funciona depois de conectar o banco de dados.');
     const { error } = await sb.from('calculator_waitlist').insert({ email, consent: true, user_id: auth.user?.id ?? null });
-    if (error && error.code === '23505') return show('Este e-mail já está na lista. Fica de olho na caixa de entrada! 🐢', true);
+    if (error && error.code === '23505') return show('Este e-mail já está na lista de espera.', true);
     if (error) return show('Não foi possível salvar agora. Tente de novo em instantes.');
-    form.reset(); show('Pronto! Você está na lista. Avisaremos no lançamento. 🎉', true);
+    form.reset(); show('Inscrição feita. Você receberá um e-mail no lançamento.', true);
     toast('Inscrição confirmada na lista de espera.');
   });
 });

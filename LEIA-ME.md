@@ -18,9 +18,14 @@ supabase/               ← NÃO sobe para a Hostinger
 
 ## 1. Criar o banco no Supabase (10 min)
 
-1. Crie uma conta em **supabase.com** → **New project**.
-   - Região: **South America (São Paulo)** — os dados ficam no Brasil (melhor para a LGPD).
-   - Anote a senha do banco num lugar seguro.
+1. Crie uma conta em **supabase.com** → **New project** e preencha:
+   - **GitHub (optional):** deixe em branco. O banco é criado pelo `schema.sql` no SQL Editor.
+   - **Project name:** `Collection3d`.
+   - **Database password:** clique em *Generate a password* e guarde num lugar seguro (o site não usa essa senha).
+   - **Region:** clique em *Need a specific region?* e escolha **South America (São Paulo)**. Os dados ficam no Brasil, o que é melhor para a LGPD.
+   - **Enable Data API:** ✅ marcado (o site usa).
+   - **Automatically expose new tables:** ⬜ desmarcado (mais seguro; o `schema.sql` já dá as permissões certas).
+   - **Enable automatic RLS:** ✅ marcado (proteção extra).
 2. Menu **SQL Editor → New query** → cole todo o conteúdo de `supabase/schema.sql` → **Run**.
 3. Menu **Project Settings → API**: copie **Project URL** e a chave **anon / publishable**.
 4. Abra `site/assets/js/config.js` e preencha:
@@ -70,17 +75,46 @@ Depois, em **Rate Limits**, ajuste o limite de e-mails por hora se precisar.
 ### Login com Apple
 Exige o **Apple Developer Program** (assinatura anual paga). Siga o guia do Supabase: *Login with Apple* (Services ID + chave .p8). Enquanto não tiver, deixe `enableApple: false` no `config.js` e o botão some.
 
-## 3. Virar administrador
+## 3. Seu painel de dono (admin)
+Só **você** entra no painel, e sempre com **verificação em 2 etapas (2FA)**. Não existe botão no site para virar admin.
+
 1. Crie a sua conta normalmente no site (Entrar → Criar conta) com `collection3d13@gmail.com`.
-2. No **SQL Editor** rode:
+2. No **SQL Editor** do Supabase rode:
    ```sql
    insert into public.admins (user_id)
    select id from auth.users where email = 'collection3d13@gmail.com'
    on conflict do nothing;
    ```
-3. Saia e entre de novo: vai aparecer **Painel admin** no menu da sua conta.
+3. Instale o **Google Authenticator** (ou Microsoft Authenticator/Authy) no celular.
+4. Acesse `collection3d.com.br/admin.html`. Na primeira vez aparece um **QR code**: leia com o app e digite o código de 6 dígitos. Nas próximas vezes, é só digitar o código do app.
+   > O 2FA por app (TOTP) já vem ativo em todo projeto Supabase. Confira em *Authentication → Multi-Factor*.
 
-No painel você vê **cadastros, pedidos (com status), produtos (cadastrar/editar com foto), lista de espera da calculadora, solicitações LGPD e registros de consentimento**, e exporta tudo em CSV. Também dá para ver as tabelas direto no Supabase em **Table Editor**.
+**Perdeu o celular?** Rode no SQL Editor e cadastre o QR de novo:
+```sql
+delete from auth.mfa_factors
+ where user_id = (select id from auth.users where email = 'collection3d13@gmail.com');
+```
+
+### O que o painel faz
+| Aba | Para quê |
+|---|---|
+| **Visão geral** | Visitas de hoje, clientes novos, pedidos aguardando, alertas |
+| **Acessos ao site** | Visitas por dia (7/30/90 dias), visitantes diferentes, páginas mais vistas, de onde vêm (Instagram, TikTok…), celular × computador |
+| **Clientes** | Lista com filtros e busca. **Ficha** de cada cliente: pedidos, consentimentos, editar nome/WhatsApp, **anotação interna**, **bloquear/desbloquear** (impede login e pedidos), exportar dados, excluir |
+| **Pedidos** | Todos os pedidos com código, cliente, WhatsApp e **status** (o cliente vê a mudança) |
+| **Produtos** | Criar, editar, esconder/mostrar, excluir, foto (otimizada automaticamente), preço, selo, destaque, links Shopee/TikTok |
+| **Banners** | Banners da página inicial com **foto**, título, texto, botão, cor de fundo e ordem. Sem banner cadastrado, aparecem os 4 padrão |
+| **Configurações** | Trocar os links das lojas e o link de venda da calculadora, **barra de aviso** no topo do site, ver os admins e o status do 2FA |
+| **Lista calculadora** | E-mails para avisar no lançamento |
+| **Solicitações LGPD** | Pedidos dos clientes com prazo de 15 dias |
+| **Consentimentos** | Prova de quem aceitou o quê |
+| **Histórico** | Tudo que foi alterado no painel, por quem e quando (não pode ser apagado) |
+
+Tudo exporta em CSV (abre no Excel). As tabelas também ficam no Supabase em **Table Editor**.
+
+**Dica de divulgação:** coloque `?utm_source=` nos links que você posta, por exemplo `https://collection3d.com.br/?utm_source=instagram-bio` ou `?utm_source=meme-bob`. Em *Acessos → De onde vêm* você vê qual post trouxe mais gente.
+
+> Estatística de visitas: pela LGPD, só conta quem aceitou cookies de *Estatísticas*. É feita pelo próprio site (sem Google Analytics) e não guarda IP, nome nem e-mail.
 
 ## 4. Publicar na Hostinger
 1. hPanel → **Sites → collection3d.com.br → Gerenciador de arquivos** → pasta `public_html`.
@@ -91,9 +125,9 @@ No painel você vê **cadastros, pedidos (com status), produtos (cadastrar/edita
 5. Acesse `https://collection3d.com.br` e teste: cadastro, e-mail de confirmação, código por e-mail, esqueci a senha, Google.
 
 ## 5. Ajustes rápidos (tudo em `assets/js/config.js`)
-- **Link da Shopee**: troque `shopeeUrl` pelo link da sua loja (app Shopee → Minha loja → Compartilhar).
+- **Link da Shopee**: troque no **Painel → Configurações** (ou em `shopeeUrl`). Pegue o link no app Shopee → Minha loja → Compartilhar.
 - **CNPJ / razão social / cidade**: preencha `razaoSocial`, `cnpj` e `cidadeUf`. Aparecem no rodapé e nas políticas.
-- **Calculadora**: quando lançar, coloque o link da Hotmart/Kiwify/etc. em `calculatorSalesUrl` e o botão "Comprar agora" é ativado sozinho.
+- **Calculadora**: quando lançar, cole o link da Hotmart/Kiwify/etc. em **Painel → Configurações** e o botão "Comprar agora" é ativado sozinho.
 - **Mudou os termos?** Altere o texto, atualize a data nas páginas e troque `termsVersion`. Todos os usuários vão aceitar a nova versão no próximo acesso.
 
 ## 6. Produtos

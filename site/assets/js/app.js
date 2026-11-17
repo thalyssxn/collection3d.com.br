@@ -7,6 +7,17 @@ import { auth, onAuth, initAuth, displayName, signOut, refreshProfile } from './
 
 const page = document.body.dataset.page || '';
 
+/* Configurações editáveis no painel (links das lojas, barra de aviso).
+   Usa a última versão salva no navegador e atualiza em segundo plano. */
+const SETTINGS_KEY = 'c3d_settings';
+const URL_KEYS = ['shopeeUrl', 'tiktokUrl', 'instagramUrl', 'calculatorSalesUrl'];
+let settings = {};
+function applySettings(st) {
+  settings = st || {};
+  URL_KEYS.forEach((k) => { if (/^https:\/\//.test(settings[k] || '')) CONFIG[k] = settings[k]; });
+}
+try { applySettings(JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')); } catch {}
+
 const NAV = [
   { id: 'inicio', href: 'index.html', label: 'Início', ic: 'home' },
   { id: 'produtos', href: 'produtos.html', label: 'Produtos', ic: 'box' },
@@ -17,9 +28,9 @@ const NAV = [
 ];
 
 export const CHANNELS = [
-  { id: 'shopee', label: 'Shopee', href: CONFIG.shopeeUrl, ic: 'shopee', tip: 'Loja na Shopee' },
-  { id: 'tiktok', label: 'TikTok Shop', href: CONFIG.tiktokUrl, ic: 'tiktok', tip: 'TikTok Shop ' + CONFIG.tiktokHandle },
-  { id: 'instagram', label: 'Instagram', href: CONFIG.instagramUrl, ic: 'instagram', tip: 'Instagram ' + CONFIG.instagramHandle },
+  { id: 'shopee', label: 'Shopee', href: CONFIG.shopeeUrl, key: 'shopeeUrl', ic: 'shopee', tip: 'Loja na Shopee' },
+  { id: 'tiktok', label: 'TikTok Shop', href: CONFIG.tiktokUrl, key: 'tiktokUrl', ic: 'tiktok', tip: 'TikTok Shop ' + CONFIG.tiktokHandle },
+  { id: 'instagram', label: 'Instagram', href: CONFIG.instagramUrl, key: 'instagramUrl', ic: 'instagram', tip: 'Instagram ' + CONFIG.instagramHandle },
   { id: 'whatsapp', label: 'WhatsApp', href: waLink('Olá, Collection 3D! Vim pelo site e queria tirar uma dúvida.'), ic: 'whatsapp', tip: 'WhatsApp' },
 ];
 
@@ -34,7 +45,7 @@ function renderHeader() {
       ${esc(n.label)}${n.soon ? '<span class="soon-dot" title="Em breve"></span>' : ''}
     </a></li>`).join('');
   const socials = CHANNELS.slice(0, 3).map((c) => `
-    <a class="icon-btn brand-${c.id}" href="${esc(c.href)}" target="_blank" rel="noopener" aria-label="${esc(c.tip)}" data-tip="${esc(c.label)}">${icon(c.ic)}</a>`).join('');
+    <a class="icon-btn brand-${c.id}" href="${esc(c.href)}" ${c.key ? `data-href="${c.key}"` : ''} target="_blank" rel="noopener" aria-label="${esc(c.tip)}" data-tip="${esc(c.label)}">${icon(c.ic)}</a>`).join('');
 
   host.outerHTML = `
   <a class="skip-link" href="#main">Pular para o conteúdo</a>
@@ -65,7 +76,7 @@ function renderHeader() {
       </ul>
       <div class="mobile-account account-slot-m"></div>
       <div class="mobile-socials">
-        ${CHANNELS.map((c) => `<a class="channel-pill brand-${c.id}" href="${esc(c.href)}" target="_blank" rel="noopener">${icon(c.ic)}<span>${esc(c.label)}</span></a>`).join('')}
+        ${CHANNELS.map((c) => `<a class="channel-pill brand-${c.id}" href="${esc(c.href)}" ${c.key ? `data-href="${c.key}"` : ''} target="_blank" rel="noopener">${icon(c.ic)}<span>${esc(c.label)}</span></a>`).join('')}
       </div>
     </div>
   </div>`;
@@ -108,7 +119,7 @@ function renderAccount(a) {
     return;
   }
   const name = displayName(a);
-  const initial = esc(name.trim()[0]?.toUpperCase() || '🐢');
+  const initial = esc(name.trim()[0]?.toUpperCase() || 'C');
   slot.innerHTML = `
     <div class="account-menu">
       <button class="avatar-btn" aria-haspopup="true" aria-expanded="false" aria-label="Minha conta">
@@ -119,13 +130,13 @@ function renderAccount(a) {
         <a role="menuitem" href="conta.html">${icon('user')} Minha conta</a>
         <a role="menuitem" href="pedidos.html">${icon('list')} Meus pedidos</a>
         <a role="menuitem" href="conta.html#privacidade">${icon('shield')} Privacidade e dados</a>
-        ${a.admin ? `<a role="menuitem" href="admin.html">${icon('gear')} Painel admin</a>` : ''}
+        ${a.adminAccount ? `<a role="menuitem" href="admin.html">${icon('gear')} Painel admin</a>` : ''}
         <button role="menuitem" class="logout">${icon('logout')} Sair</button>
       </div>
     </div>`;
   if (slotM) slotM.innerHTML = `
     <a class="btn btn-ghost btn-block" href="conta.html">${icon('user')} ${esc(name)}</a>
-    ${a.admin ? `<a class="btn btn-ghost btn-block" href="admin.html">${icon('gear')} Painel admin</a>` : ''}
+    ${a.adminAccount ? `<a class="btn btn-ghost btn-block" href="admin.html">${icon('gear')} Painel admin</a>` : ''}
     <button class="btn btn-ghost btn-block logout">${icon('logout')} Sair</button>`;
   const btn = $('.avatar-btn', slot); const dd = $('.dropdown', slot);
   const toggle = (show) => { dd.hidden = !show; btn.setAttribute('aria-expanded', String(show)); };
@@ -147,13 +158,12 @@ function renderFooter() {
   const legal = [CONFIG.razaoSocial, CONFIG.cnpj && `CNPJ ${CONFIG.cnpj}`, CONFIG.cidadeUf].filter(Boolean).map(esc).join(' · ');
   host.outerHTML = `
   <footer class="site-footer">
-    <div class="footer-wave" aria-hidden="true"></div>
     <div class="container footer-grid">
       <div class="footer-brand">
         <a href="index.html" class="footer-logo"><img src="assets/img/logo-900.png" alt="Collection 3D" width="900" height="362" loading="lazy"></a>
-        <p>Chaveiros, miniaturas e acessórios colecionáveis com acabamento caprichado — feitos para quem coleciona o que ama.</p>
+        <p>Chaveiros, miniaturas e acessórios colecionáveis, com collabs oficiais e novidades toda semana.</p>
         <div class="footer-socials">
-          ${CHANNELS.map((c) => `<a class="icon-btn brand-${c.id}" href="${esc(c.href)}" target="_blank" rel="noopener" aria-label="${esc(c.tip)}">${icon(c.ic)}</a>`).join('')}
+          ${CHANNELS.map((c) => `<a class="icon-btn brand-${c.id}" href="${esc(c.href)}" ${c.key ? `data-href="${c.key}"` : ''} target="_blank" rel="noopener" aria-label="${esc(c.tip)}">${icon(c.ic)}</a>`).join('')}
         </div>
       </div>
       <nav class="footer-col" aria-label="Navegação">
@@ -162,7 +172,7 @@ function renderFooter() {
       </nav>
       <nav class="footer-col" aria-label="Onde comprar">
         <h3>Onde comprar</h3>
-        <ul>${CHANNELS.map((c) => `<li><a href="${esc(c.href)}" target="_blank" rel="noopener">${esc(c.label)}</a></li>`).join('')}</ul>
+        <ul>${CHANNELS.map((c) => `<li><a href="${esc(c.href)}" ${c.key ? `data-href="${c.key}"` : ''} target="_blank" rel="noopener">${esc(c.label)}</a></li>`).join('')}</ul>
       </nav>
       <nav class="footer-col" aria-label="Legal">
         <h3>Privacidade</h3>
@@ -186,7 +196,6 @@ function renderFooter() {
       <p>© ${year} ${esc(CONFIG.siteName)}. Todos os direitos reservados.${legal ? `<br><span>${legal}</span>` : ''}</p>
       <p class="footer-note">Este site não realiza vendas: os pedidos são combinados pelo WhatsApp ou feitos nos marketplaces oficiais. Imagens meramente ilustrativas. Marcas citadas pertencem aos seus respectivos titulares.</p>
     </div>
-    <div class="footer-giant" aria-hidden="true">collection</div>
   </footer>`;
 }
 
@@ -239,9 +248,8 @@ function showCookieBanner() {
   el.className = 'cookie-banner';
   el.setAttribute('aria-label', 'Aviso de cookies');
   el.innerHTML = `
-    <div class="cookie-icon">${icon('cookie')}</div>
     <div class="cookie-text">
-      <h2>Cookies, só com a sua permissão</h2>
+      <h2>Sua privacidade</h2>
       <p>Usamos cookies essenciais para o site funcionar (login e segurança). Cookies de estatística e marketing só são usados se você permitir. <a href="cookies.html">Política de Cookies</a></p>
     </div>
     <div class="cookie-actions">
@@ -262,12 +270,12 @@ function showCookieBanner() {
 export function openCookiePrefs() {
   const cur = getCookieConsent() || { analytics: false, marketing: false };
   const m = modal(`
-    <h2 class="modal-title">${icon('cookie')} Preferências de cookies</h2>
+    <h2 class="modal-title">Preferências de cookies</h2>
     <p class="muted">Escolha o que podemos usar. Você pode mudar isso a qualquer momento no rodapé do site.</p>
     <div class="ck-list">
       <label class="ck-row"><div><strong>Essenciais</strong><small>Login, segurança e lembrar suas escolhas. Sem eles o site não funciona.</small></div>
         <span class="switch is-locked"><input type="checkbox" checked disabled><span></span></span></label>
-      <label class="ck-row"><div><strong>Estatísticas</strong><small>Contagem anônima de visitas para melhorar o site. (Hoje não usamos nenhuma ferramenta desse tipo.)</small></div>
+      <label class="ck-row"><div><strong>Estatísticas</strong><small>Contagem de visitas feita pelo próprio site, sem Google nem outras empresas: página vista, de onde veio e tipo de aparelho. Nada de nome, e-mail ou IP.</small></div>
         <span class="switch"><input type="checkbox" name="analytics" ${cur.analytics ? 'checked' : ''}><span></span></span></label>
       <label class="ck-row"><div><strong>Marketing</strong><small>Medir anúncios e campanhas nas redes sociais. (Hoje não usamos nenhuma ferramenta desse tipo.)</small></div>
         <span class="switch"><input type="checkbox" name="marketing" ${cur.marketing ? 'checked' : ''}><span></span></span></label>
@@ -352,7 +360,7 @@ function termsGate(a) {
     const sb = await getSupabase();
     const { error } = await sb.rpc('accept_terms', { p_version: CONFIG.termsVersion, p_marketing: f.mkt.checked });
     if (error) { toast('Não foi possível salvar. Tente de novo.', 'err'); return; }
-    m.close(); gateOpen = false; toast('Tudo certo! Bem-vindo(a) à Collection 3D 🐢');
+    m.close(); gateOpen = false; toast('Cadastro concluído. Bem-vindo(a) à Collection 3D.');
     refreshProfile();
   });
 }
@@ -428,7 +436,67 @@ bindGlobal();
 initReveal();
 initTilt();
 initCounters();
-onAuth((a) => { renderAccount(a); termsGate(a); });
+/* Conta bloqueada pelo admin */
+let blockedShown = false;
+function blockedGate(a) {
+  if (!a.profile?.blocked || blockedShown) return false;
+  blockedShown = true;
+  const m = modal(`<div class="gate-icon" style="background:var(--berry-soft)">${icon('lock')}</div>
+    <h2 class="modal-title">Conta suspensa</h2>
+    <p class="muted">Esta conta foi suspensa. Se acha que é um engano, escreva para <a href="mailto:${esc(CONFIG.email)}">${esc(CONFIG.email)}</a>. Seus direitos da LGPD continuam valendo por e-mail.</p>
+    <div class="modal-actions"><button class="btn btn-ink" data-ok>Entendi</button></div>`, { label: 'Conta suspensa', dismissible: false });
+  $('[data-ok]', m.el).addEventListener('click', async () => { await signOut(); m.close(); location.href = 'index.html'; });
+  return true;
+}
+
+/* Barra de aviso (editável no painel) */
+function renderAnnouncement() {
+  $('.announce')?.remove();
+  const text = (settings.announcement || '').trim();
+  if (settings.announcementOn !== 'true' || !text) return;
+  try { if (sessionStorage.getItem('c3d_announce_closed') === text) return; } catch {}
+  const link = /^https:\/\/|^[\w-]+\.html/.test(settings.announcementLink || '') ? settings.announcementLink : '';
+  const bar = document.createElement('div');
+  bar.className = 'announce';
+  bar.innerHTML = `<div class="container announce-inner">${icon('bell')}${link ? `<a href="${esc(link)}">${esc(text)}</a>` : `<span>${esc(text)}</span>`}
+    <button class="announce-x" aria-label="Fechar aviso">${icon('close')}</button></div>`;
+  document.body.prepend(bar);
+  $('.announce-x', bar).addEventListener('click', () => { try { sessionStorage.setItem('c3d_announce_closed', text); } catch {} bar.remove(); });
+}
+
+async function refreshSettings() {
+  const sb = await getSupabase(); if (!sb) return;
+  const { data, error } = await sb.from('site_settings').select('key,value');
+  if (error || !data) return;
+  const st = Object.fromEntries(data.map((r) => [r.key, r.value]));
+  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(st)); } catch {}
+  applySettings(st);
+  $$('[data-href]').forEach((el) => { const v = CONFIG[el.dataset.href]; if (v) el.href = v; });
+  renderAnnouncement();
+}
+
+/* Estatística de visitas própria — só com consentimento de "Estatísticas" */
+let tracked = false;
+function trackVisit() {
+  if (tracked || ['admin'].includes(page)) return;
+  tracked = true;
+  const ua = navigator.userAgent;
+  const device = /iPad|Tablet|PlayBook|Silk/i.test(ua) || (/Android/i.test(ua) && !/Mobile/i.test(ua)) ? 'tablet' : /Mobi|iPhone|Android/i.test(ua) ? 'mobile' : 'desktop';
+  const utm = new URLSearchParams(location.search).get('utm_source');
+  let ref = null;
+  try { const r = document.referrer && new URL(document.referrer); if (r && r.host !== location.host) ref = r.host.replace(/^(www|l|lm|m|out)\./, ''); } catch {}
+  const referrer = (utm || ref || '').slice(0, 120) || null;
+  onAuth(async (a) => {
+    const sb = await getSupabase(); if (!sb) return;
+    await sb.from('site_visits').insert({ visitor: anonId(), path: location.pathname.slice(0, 200) || '/', referrer, device, logged_in: !!a.user }).then(() => {}, () => {});
+  });
+}
+document.addEventListener('c3d:consent', (e) => { if (e.detail.analytics) trackVisit(); });
+
+onAuth((a) => { renderAccount(a); if (!blockedGate(a)) termsGate(a); });
 initAuth();
+renderAnnouncement();
+refreshSettings();
 const consent = getCookieConsent();
-if (consent) window.c3dConsent = consent; else setTimeout(showCookieBanner, 700);
+if (consent) { window.c3dConsent = consent; if (consent.analytics) trackVisit(); }
+else setTimeout(showCookieBanner, 700);

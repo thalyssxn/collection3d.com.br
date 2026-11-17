@@ -2,7 +2,7 @@ import { $, $$, esc, fmtDate, withLoading, toast, downloadFile, passwordOk } fro
 import { icon } from '../icons.js';
 import { CONFIG, isSupabaseConfigured } from '../config.js';
 import { getSupabase, authErrorPT } from '../supa.js';
-import { onAuth, refreshProfile, displayName, signOut } from '../auth-store.js';
+import { onAuth, refreshProfile, displayName, signOut, PROFILE_COLS } from '../auth-store.js';
 import { modal } from '../app.js';
 
 const root = $('#account-root');
@@ -21,7 +21,7 @@ onAuth((a) => {
     }
     location.replace('entrar.html?next=conta.html'); return;
   }
-  $('#hello').textContent = `Olá, ${displayName(a).split(' ')[0]}! 🐢`;
+  $('#hello').textContent = `Olá, ${displayName(a).split(' ')[0]}`;
   if (!rendered) { rendered = true; layout(a); }
 });
 
@@ -33,7 +33,7 @@ function layout(a) {
         <a href="pedidos.html">${icon('list')} Meus pedidos</a>
         <button role="tab" data-s="privacidade">${icon('shield')} Privacidade e dados</button>
         <button role="tab" data-s="seguranca">${icon('lock')} Segurança</button>
-        ${a.admin ? `<a href="admin.html">${icon('gear')} Painel admin</a>` : ''}
+        ${a.adminAccount ? `<a href="admin.html">${icon('gear')} Painel admin</a>` : ''}
         <button class="logout-btn">${icon('logout')} Sair</button>
       </nav>
       <div id="sec"></div>
@@ -139,7 +139,7 @@ async function privacidade(a, el) {
 
   $('#export').addEventListener('click', (e) => withLoading(e.currentTarget, async () => {
     const [prof, orders, consents, reqs, wl] = await Promise.all([
-      sb.from('profiles').select('*').eq('id', a.user.id).maybeSingle(),
+      sb.from('profiles').select(PROFILE_COLS).eq('id', a.user.id).maybeSingle(),
       sb.from('interest_requests').select('*').eq('user_id', a.user.id),
       sb.from('consent_logs').select('consent_type,granted,policy_version,details,created_at').eq('user_id', a.user.id),
       sb.from('data_requests').select('*').eq('user_id', a.user.id),

@@ -6,7 +6,7 @@
 <title>Pedidos — Collection 3D</title>
 <meta name="description" content="Como fazer um pedido na Collection 3D e acompanhar seus pedidos de interesse.">
 <link rel="canonical" href="https://collection3d.com.br/pedidos.html">
-<meta name="theme-color" content="#a9e26c">
+<meta name="theme-color" content="#ffffff">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Collection 3D">
 <meta property="og:locale" content="pt_BR">
@@ -21,8 +21,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-<link rel="preload" href="assets/fonts/fredoka-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="assets/fonts/plus-jakarta-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/style.css">
 <script type="module" src="assets/js/app.js"></script>
 <script type="module" src="assets/js/pages/pedidos.js"></script>
@@ -32,23 +31,22 @@
 <main id="main">
 <section class="page-hero">
   <div class="container">
-    <span class="kicker" data-reveal><svg class="ico " viewBox="0 0 512 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M133.8 36.3c10.9 7.6 13.5 22.6 5.9 33.4l-56 80c-4.1 5.8-10.5 9.5-17.6 10.1S52 158 47 153L7 113C-2.3 103.6-2.3 88.4 7 79S31.6 69.7 41 79l19.8 19.8 39.6-56.6c7.6-10.9 22.6-13.5 33.4-5.9zm0 160c10.9 7.6 13.5 22.6 5.9 33.4l-56 80c-4.1 5.8-10.5 9.5-17.6 10.1S52 318 47 313L7 273c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l19.8 19.8 39.6-56.6c7.6-10.9 22.6-13.5 33.4-5.9zM224 96c0-17.7 14.3-32 32-32l224 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-224 0c-17.7 0-32-14.3-32-32zm0 160c0-17.7 14.3-32 32-32l224 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-224 0c-17.7 0-32-14.3-32-32zM160 416c0-17.7 14.3-32 32-32l288 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-288 0c-17.7 0-32-14.3-32-32zM64 376a40 40 0 1 1 0 80 40 40 0 1 1 0-80z"/></svg> Pedidos</span>
-    <h1 data-reveal>Seus <span style="background:linear-gradient(transparent 58%,var(--lime) 58% 92%,transparent 92%)">pedidos</span></h1>
-    <p class="lead" data-reveal>Aqui você acompanha os produtos que pediu pelo site. O pedido é confirmado no atendimento pelo WhatsApp — o site não cobra nada.</p>
+    <h1>Pedidos</h1>
+    <p class="lead">Aqui você acompanha os produtos que pediu pelo site. O pedido é confirmado no atendimento pelo WhatsApp — o site não cobra nada.</p>
   </div>
 </section>
 
 <section class="section" style="padding-top:10px">
   <div class="container split" style="align-items:start">
-    <div class="card" data-reveal id="my-orders">
+    <div class="card" id="my-orders">
       <h2><svg class="ico " viewBox="0 0 640 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M560.3 237.2c10.4 11.8 28.3 14.4 41.8 5.5 14.7-9.8 18.7-29.7 8.9-44.4l-48-72c-2.8-4.2-6.6-7.7-11.1-10.2L351.4 4.7c-19.3-10.7-42.8-10.7-62.2 0L88.8 116c-5.4 3-9.7 7.4-12.6 12.8L27.7 218.7c-12.6 23.4-3.8 52.5 19.6 65.1l33 17.7 0 53.3c0 23 12.4 44.3 32.4 55.7l176 99.7c19.6 11.1 43.5 11.1 63.1 0l176-99.7c20.1-11.4 32.4-32.6 32.4-55.7l0-117.5zm-240-9.8L170.2 144 320.3 60.6 470.4 144 320.3 227.4zm-41.5 50.2l-21.3 46.2-165.8-88.8 25.4-47.2 161.7 89.8z"/></svg> Meus pedidos</h2>
       <p class="muted">Carregando…</p>
     </div>
-    <div data-reveal>
+    <div>
       <div class="steps" style="grid-template-columns:1fr;gap:26px">
-        <div class="step"><svg class="ico " viewBox="0 0 640 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M560.3 237.2c10.4 11.8 28.3 14.4 41.8 5.5 14.7-9.8 18.7-29.7 8.9-44.4l-48-72c-2.8-4.2-6.6-7.7-11.1-10.2L351.4 4.7c-19.3-10.7-42.8-10.7-62.2 0L88.8 116c-5.4 3-9.7 7.4-12.6 12.8L27.7 218.7c-12.6 23.4-3.8 52.5 19.6 65.1l33 17.7 0 53.3c0 23 12.4 44.3 32.4 55.7l176 99.7c19.6 11.1 43.5 11.1 63.1 0l176-99.7c20.1-11.4 32.4-32.6 32.4-55.7l0-117.5zm-240-9.8L170.2 144 320.3 60.6 470.4 144 320.3 227.4zm-41.5 50.2l-21.3 46.2-165.8-88.8 25.4-47.2 161.7 89.8z"/></svg><h3>Escolha no catálogo</h3><p>Abra o produto e escolha a quantidade.</p></div>
-        <div class="step"><svg class="ico " viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><h3>Clique em Adquirir</h3><p>Se você estiver logado, o pedido ganha um código (ex.: <strong>#K7Q2XM</strong>) e aparece aqui.</p></div>
-        <div class="step"><svg class="ico " viewBox="0 0 512 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M256 512a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM374 145.7c-10.7-7.8-25.7-5.4-33.5 5.3L221.1 315.2 169 263.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l72 72c5 5 11.8 7.5 18.8 7s13.4-4.1 17.5-9.8L379.3 179.2c7.8-10.7 5.4-25.7-5.3-33.5z"/></svg><h3>Confirme no WhatsApp</h3><p>Combinamos valores, pagamento e envio. O status do pedido é atualizado nesta página.</p></div>
+        <div class="step"><h3>Escolha no catálogo</h3><p>Abra o produto e escolha a quantidade.</p></div>
+        <div class="step"><h3>Clique em Adquirir</h3><p>Se você estiver logado, o pedido ganha um código (ex.: <strong>#K7Q2XM</strong>) e aparece aqui.</p></div>
+        <div class="step"><h3>Confirme no WhatsApp</h3><p>Combinamos valores, pagamento e envio. O status do pedido é atualizado nesta página.</p></div>
       </div>
     </div>
   </div>
@@ -56,10 +54,10 @@
 
 <section class="section section-tight">
   <div class="container" style="max-width:860px">
-    <div class="section-head center" style="text-align:center" data-reveal>
-      <h2 class="section-title">Dúvidas sobre <em>pedidos</em></h2>
+    <div class="section-head center" style="text-align:center">
+      <h2 class="section-title">Dúvidas sobre pedidos</h2>
     </div>
-    <div class="faq" data-reveal>
+    <div class="faq">
       <details><summary>Preciso ter conta para pedir?</summary><p>Não. Você pode clicar em Adquirir e falar com a gente sem cadastro. A conta serve para guardar o histórico dos seus pedidos com um código.</p></details>
       <details><summary>Como pago?</summary><p>As formas de pagamento e o frete são informados no atendimento pelo WhatsApp. Se preferir, compre pela Shopee ou pelo TikTok Shop, que têm pagamento protegido.</p></details>
       <details><summary>Posso desistir da compra?</summary><p>Sim. Nas compras feitas fora de loja física você tem 7 dias a partir do recebimento para desistir, conforme o art. 49 do Código de Defesa do Consumidor. Fale com a gente pelo WhatsApp.</p></details>

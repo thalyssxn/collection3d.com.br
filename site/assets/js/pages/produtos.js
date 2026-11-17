@@ -39,7 +39,7 @@ filters.addEventListener('click', (e) => {
 q.addEventListener('input', debounce(render, 150));
 sort.addEventListener('change', render);
 
-grid.innerHTML = Array.from({ length: 8 }, () => '<div class="p-card" style="min-height:380px;opacity:.5"></div>').join('');
+grid.innerHTML = Array.from({ length: 8 }, () => '<div class="skeleton"></div>').join('');
 fetchProducts().then((list) => {
   all = list;
   if (cat !== 'todos' && !all.some((p) => p.category === cat)) cat = 'todos';

@@ -42,10 +42,10 @@ ErrorDocument 404 /404.html
     Header set X-Robots-Tag "noindex, nofollow"
     Header set Cache-Control "no-store"
   </FilesMatch>
-  <FilesMatch "\.(html|js)$">
+  <FilesMatch "\.(html|js|css)$">
     Header set Cache-Control "no-cache"
   </FilesMatch>
-  <FilesMatch "\.(css|woff2|png|jpg|jpeg|webp|svg|ico)$">
+  <FilesMatch "\.(woff2|png|jpg|jpeg|webp|svg|ico)$">
     Header set Cache-Control "public, max-age=2592000"
   </FilesMatch>
 </IfModule>

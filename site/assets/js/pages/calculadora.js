@@ -14,9 +14,9 @@ if (buy && /^https:\/\//.test(CONFIG.calculatorSalesUrl)) {
 
 // Animação da prévia (valores ilustrativos)
 const DEMO = [
-  { mk: 'Shopee', pv: 'R$ 39,90', tx: 'R$ 9,58', cu: 'R$ 7,20' },
-  { mk: 'TikTok Shop', pv: 'R$ 29,90', tx: 'R$ 7,18', cu: 'R$ 5,40' },
-  { mk: 'Mercado Livre', pv: 'R$ 49,90', tx: 'R$ 12,47', cu: 'R$ 8,10' },
+  { mk: 'Shopee', pv: 'R$ 39,90', tx: 'R$ 12,48', cu: 'R$ 7,20' },
+  { mk: 'TikTok Shop', pv: 'R$ 29,90', tx: 'R$ 8,78', cu: 'R$ 5,40' },
+  { mk: 'Mercado Livre', pv: 'R$ 49,90', tx: 'R$ 14,14', cu: 'R$ 8,10' },
 ];
 if (!prefersReducedMotion()) {
   let n = 0;

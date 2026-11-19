@@ -343,8 +343,8 @@ async function clientSheet(id) {
           ${u.blocked ? '<span class="status st-cancelado">Bloqueado</span>' : '<span class="status st-concluido">Ativo</span>'}
           ${u.is_admin ? '<span class="chip chip-lime">admin</span>' : ''}
           ${u.marketing_opt_in ? '<span class="chip">aceita novidades</span>' : ''}
-          ${u.accepted_terms_at ? `<span class="chip">termos v${esc(u.terms_version || '')}</span>` : '<span class="chip" style="background:#fff3cf">termos pendentes</span>'}
-          ${u.email_confirmed_at ? '' : '<span class="chip" style="background:#fff3cf">e-mail não confirmado</span>'}
+          ${u.accepted_terms_at ? `<span class="chip">termos v${esc(u.terms_version || '')}</span>` : '<span class="chip" style="background:var(--warn-soft)">termos pendentes</span>'}
+          ${u.email_confirmed_at ? '' : '<span class="chip" style="background:var(--warn-soft)">e-mail não confirmado</span>'}
         </p></div>
     </div>
     <div class="client-actions">

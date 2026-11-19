@@ -6,7 +6,7 @@ import { onAuth } from '../auth-store.js';
 import { demoNotice } from '../app.js';
 
 const params = new URLSearchParams(location.search);
-const safeNext = (n) => (/^[a-z0-9-]+\.html(#[\w-]*)?$/i.test(n || '') ? n : 'conta.html');
+const safeNext = (n) => (/^([a-z0-9-]+\.html|app\/)(#[\w-]*)?$/i.test(n || '') ? n : 'conta.html'); // app/ = Calculadora
 const next = safeNext(params.get('next'));
 
 demoNotice($('#auth-notice'));

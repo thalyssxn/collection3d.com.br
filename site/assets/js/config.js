@@ -48,7 +48,7 @@ export const CONFIG = {
 
   // Versão dos Termos/Política. Mude a data quando alterar os textos:
   // quem já tinha aceitado verá o pedido de aceite de novo.
-  termsVersion: '2026-11-16',
+  termsVersion: '2026-11-18',
 };
 
 export const isSupabaseConfigured = () =>

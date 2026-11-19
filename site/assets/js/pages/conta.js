@@ -138,17 +138,21 @@ async function privacidade(a, el) {
   });
 
   $('#export').addEventListener('click', (e) => withLoading(e.currentTarget, async () => {
-    const [prof, orders, consents, reqs, wl] = await Promise.all([
+    const [prof, orders, consents, reqs, wl, calcSub, calcProd, calcSet] = await Promise.all([
       sb.from('profiles').select(PROFILE_COLS).eq('id', a.user.id).maybeSingle(),
       sb.from('interest_requests').select('*').eq('user_id', a.user.id),
       sb.from('consent_logs').select('consent_type,granted,policy_version,details,created_at').eq('user_id', a.user.id),
       sb.from('data_requests').select('*').eq('user_id', a.user.id),
       Promise.resolve({ data: 'A lista de espera não é exibida por segurança; peça por e-mail se precisar.' }),
+      sb.from('calc_subscriptions').select('status,plan,source,current_period_end,created_at,updated_at'),
+      sb.from('calc_products').select('name,sku,data,created_at,updated_at'),
+      sb.from('calc_settings').select('data,updated_at'),
     ]);
     const dump = {
       gerado_em: new Date().toISOString(), controlador: CONFIG.siteName, contato: CONFIG.email,
       conta: { id: a.user.id, email: a.user.email, criado_em: a.user.created_at, ultimo_acesso: a.user.last_sign_in_at, provedor_login: a.user.app_metadata?.provider },
       perfil: prof.data, pedidos: orders.data, consentimentos: consents.data, solicitacoes_lgpd: reqs.data, lista_calculadora: wl.data,
+      calculadora: { assinatura: calcSub.data || [], produtos: calcProd.data || [], preferencias: calcSet.data || [] },
       dados_no_navegador: { preferencias_cookies: JSON.parse(localStorage.getItem('c3d_cookie_consent') || 'null') },
     };
     downloadFile(`collection3d-meus-dados-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(dump, null, 2));

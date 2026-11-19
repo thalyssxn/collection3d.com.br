@@ -23,6 +23,7 @@ const TABS = [
   { id: 'clientes', label: 'Clientes', ic: 'users' },
   { id: 'pedidos', label: 'Pedidos', ic: 'list' },
   { id: 'produtos', label: 'Produtos', ic: 'box' },
+  { id: 'modelos', label: 'Modelos 3D', ic: 'cube' },
   { id: 'banners', label: 'Banners', ic: 'image' },
   { id: 'config', label: 'Configurações', ic: 'gear' },
   { id: 'lista', label: 'Lista calculadora', ic: 'calc' },
@@ -140,7 +141,7 @@ function go(t, push = true) {
   $$('.side-nav [data-t]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.t === tab)));
   const panel = $('#panel');
   panel.innerHTML = `<div class="card"><p class="muted">Carregando…</p></div>`;
-  ({ geral, acessos, clientes, pedidos, produtos, banners, config, lista, lgpd, consentimentos, historico })[tab](panel);
+  ({ geral, acessos, clientes, pedidos, produtos, modelos, banners, config, lista, lgpd, consentimentos, historico })[tab](panel);
 }
 
 const err = (panel, e) => { console.error(e); panel.innerHTML = `<div class="card"><p class="notice notice-warn">${icon('warn')}<span>Erro ao carregar: ${esc(e.message || e)}</span></p></div>`; };
@@ -251,7 +252,7 @@ async function acessos(panel, days = 30) {
             <span class="hbar-track"><span class="hbar-fill" style="width:${(x.total / top * 100).toFixed(1)}%"></span></span><b>${x.total}</b></div>`).join('')}</div>`
           : '<p class="muted">Sem dados ainda.</p>'}</div>`;
     };
-    const page = (p) => ({ '/': 'Início', '/index.html': 'Início', '/produtos.html': 'Produtos', '/lojas.html': 'Lojas', '/pedidos.html': 'Pedidos', '/calculadora.html': 'Calculadora', '/contato.html': 'Contato', '/entrar.html': 'Entrar', '/conta.html': 'Minha conta' }[p] || p.replace(/^\//, ''));
+    const page = (p) => ({ '/': 'Início', '/index.html': 'Início', '/produtos.html': 'Produtos', '/modelos.html': 'Modelos 3D', '/lojas.html': 'Lojas', '/pedidos.html': 'Pedidos', '/calculadora.html': 'Calculadora', '/contato.html': 'Contato', '/entrar.html': 'Entrar', '/conta.html': 'Minha conta' }[p] || p.replace(/^\//, ''));
     const dev = (d) => ({ mobile: 'Celular', desktop: 'Computador', tablet: 'Tablet' }[d] || d);
     panel.innerHTML = `
       <div class="card">
@@ -562,6 +563,154 @@ function productForm(p, all) {
       const { error } = await (isNew ? sb.from('products').insert(row) : sb.from('products').update(row).eq('id', p.id));
       if (error) return msg(error.code === '23505' ? 'Já existe um produto com esse slug.' : 'Erro ao salvar: ' + error.message);
       m.close(); toast(isNew ? 'Produto criado!' : 'Produto atualizado!'); go('produtos', false);
+    });
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/* Modelos 3D (STL / 3MF)                                              */
+/* ------------------------------------------------------------------ */
+const FORMATS = ['STL', '3MF', 'OBJ', 'STEP'];
+const LIC = { pessoal: 'Uso pessoal', comercial: 'Venda das peças liberada' };
+async function modelos(panel) {
+  try {
+    const { data, error } = await sb.from('models3d').select('*').order('sort_order').order('created_at', { ascending: false });
+    if (error) {
+      if (/models3d|schema cache|does not exist/i.test(error.message)) {
+        panel.innerHTML = `<div class="card"><h2>${icon('cube')} Modelos 3D</h2><p class="notice notice-warn">${icon('warn')}<span>Falta criar a tabela no banco. No Supabase, abra <strong>SQL Editor › New query</strong>, cole todo o arquivo <code>supabase/modelos-3d.sql</code> e clique em <strong>Run</strong>. Depois recarregue esta página.</span></p></div>`;
+        return;
+      }
+      throw error;
+    }
+    const total = data.reduce((n, m) => n + (m.downloads || 0), 0);
+    table(panel, {
+      title: 'Modelos 3D', ic: 'cube', rows: data, csvName: 'modelos-3d',
+      intro: `<p class="muted" style="margin-top:-6px">Grátis: cole o link do Google Drive. Pagos: cole o link de compra da plataforma (Kiwify, Hotmart, Cults3D...). ${total ? `<strong>${total.toLocaleString('pt-BR')}</strong> downloads grátis no total.` : ''}</p>`,
+      toolsExtra: `<button class="btn btn-ink btn-sm" data-new>${icon('plus')} Novo modelo</button>`,
+      searchKeys: ['name', 'slug', 'category', 'badge', (r) => (r.formats || []).join(' ')],
+      columns: [
+        { label: 'Imagem', csv: false, html: (r) => `<div class="thumb">${productArt(r)}</div>` },
+        { label: 'Nome', html: (r) => `<strong>${esc(r.name)}</strong><br><small class="muted">${esc(r.slug)}</small>`, get: (r) => r.name },
+        { label: 'Tipo', get: (r) => (r.is_free ? 'Grátis' : 'Pago'), html: (r) => r.is_free ? '<span class="chip chip-lime">Grátis</span>' : `<span class="chip">${esc(r.price != null ? fmtPrice(r.price) : 'Pago')}</span>` },
+        { label: 'Arquivos', get: (r) => (r.formats || []).join(', ') },
+        { label: 'Licença', get: (r) => LIC[r.license] || r.license },
+        { label: 'Downloads', get: (r) => (r.is_free ? r.downloads : '—') },
+        { label: 'Visível', get: (r) => (r.active ? 'Sim' : 'Não'), html: (r) => `<label class="switch" title="Mostrar no site"><input type="checkbox" data-mvis="${r.id}" ${r.active ? 'checked' : ''} aria-label="Visível no site"><span></span></label>` },
+        { label: 'Ordem', key: 'sort_order' },
+        { label: 'Ações', csv: false, html: (r) => `<div style="display:flex;gap:6px"><button class="btn btn-sm" data-medit="${r.id}" aria-label="Editar">${icon('edit')}</button><a class="btn btn-sm" href="modelos.html?m=${esc(r.slug)}" target="_blank" aria-label="Ver no site">${icon('external')}</a><button class="btn btn-sm" data-mdel="${r.id}" aria-label="Excluir" style="--bg:var(--berry-soft)">${icon('trash')}</button></div>` },
+      ],
+      after: (tbody) => {
+        $$('[data-medit]', tbody).forEach((b) => b.addEventListener('click', () => modelForm(data.find((x) => x.id === b.dataset.medit), data)));
+        $$('[data-mvis]', tbody).forEach((c) => c.addEventListener('change', async () => {
+          const { error } = await sb.from('models3d').update({ active: c.checked }).eq('id', c.dataset.mvis);
+          if (error) { c.checked = !c.checked; return toast('Erro ao salvar.', 'err'); }
+          const x = data.find((m) => m.id === c.dataset.mvis); if (x) x.active = c.checked;
+          toast(c.checked ? 'Modelo visível no site.' : 'Modelo escondido do site.');
+        }));
+        $$('[data-mdel]', tbody).forEach((b) => b.addEventListener('click', async () => {
+          const x = data.find((m) => m.id === b.dataset.mdel);
+          if (!window.confirm(`Excluir "${x.name}"? Dica: para só esconder do site, desligue "Visível".`)) return;
+          const { error } = await sb.from('models3d').delete().eq('id', x.id);
+          if (error) return toast('Erro ao excluir.', 'err');
+          toast('Modelo excluído.'); go('modelos', false);
+        }));
+      },
+    });
+    $('[data-new]', panel).addEventListener('click', () => modelForm(null, data));
+  } catch (e) { err(panel, e); }
+}
+
+function modelForm(x, all) {
+  const isNew = !x;
+  x = x || { name: '', slug: '', description: '', print_notes: '', category: 'outros', formats: ['STL'], is_free: true, price: null, download_url: '', buy_url: '', license: 'pessoal', badge: '', image_url: '', active: true, sort_order: (all.at(-1)?.sort_order || 0) + 1 };
+  const cats = [...new Set([...Object.keys(CATEGORIES), ...all.map((m) => m.category)])];
+  const m = modal(`
+    <h2 class="modal-title">${icon(isNew ? 'plus' : 'edit')} ${isNew ? 'Novo modelo 3D' : 'Editar modelo 3D'}</h2>
+    <form class="form-grid" id="mf" novalidate>
+      <div class="field"><label for="m-name">Nome *</label><input id="m-name" name="name" maxlength="120" value="${esc(x.name)}"></div>
+      <div class="field"><label for="m-slug">Endereço (slug) *</label><input id="m-slug" name="slug" maxlength="80" value="${esc(x.slug)}"><small>Link: modelos.html?m=<b class="slug-prev">${esc(x.slug)}</b></small></div>
+      <fieldset class="full" style="border:0;padding:0;margin:0"><legend class="label" style="margin-bottom:8px">Tipo *</legend>
+        <div style="display:flex;gap:18px;flex-wrap:wrap">
+          <label class="check"><input type="radio" name="kind" value="free" ${x.is_free ? 'checked' : ''}><span>Grátis (link de download)</span></label>
+          <label class="check"><input type="radio" name="kind" value="paid" ${x.is_free ? '' : 'checked'}><span>Pago (link de compra)</span></label>
+        </div></fieldset>
+      <div class="field full" data-free><label for="m-dl">Link de download *</label><input id="m-dl" name="download_url" maxlength="600" placeholder="https://drive.google.com/..." value="${esc(x.download_url || '')}">
+        <small>No Google Drive: botão direito no arquivo (ou na pasta) › Compartilhar › Acesso geral: <strong>Qualquer pessoa com o link</strong> › Copiar link.</small></div>
+      <div class="field" data-paid><label for="m-price">Preço (R$) *</label><input id="m-price" name="price" inputmode="decimal" placeholder="14,90" value="${x.price != null ? String(x.price).replace('.', ',') : ''}"><small>Só para mostrar no site; quem cobra é a plataforma.</small></div>
+      <div class="field" data-paid><label for="m-buy">Link de compra *</label><input id="m-buy" name="buy_url" maxlength="600" placeholder="https://pay.kiwify.com.br/..." value="${esc(x.buy_url || '')}"><small>O arquivo pago fica só na plataforma: ela entrega depois do pagamento.</small></div>
+      <div class="full"><span class="label">Arquivos incluídos *</span>
+        <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:6px">${FORMATS.map((f) => `<label class="check"><input type="checkbox" name="fmt" value="${f}" ${(x.formats || []).includes(f) ? 'checked' : ''}><span>${f}</span></label>`).join('')}</div></div>
+      <div class="field"><label for="m-lic">Licença</label><select id="m-lic" name="license">${Object.entries(LIC).map(([k, v]) => `<option value="${k}" ${k === x.license ? 'selected' : ''}>${v}</option>`).join('')}</select><small>Revender o arquivo é sempre proibido.</small></div>
+      <div class="field"><label for="m-cat">Categoria</label><input id="m-cat" name="category" list="mcat-list" maxlength="40" value="${esc(x.category)}"><datalist id="mcat-list">${cats.map((c) => `<option value="${esc(c)}">${esc(catOf(c).label)}</option>`).join('')}</datalist></div>
+      <div class="field full"><label for="m-desc">Descrição</label><textarea id="m-desc" name="description" maxlength="2000" placeholder="O que é, tamanho, se precisa montar...">${esc(x.description || '')}</textarea></div>
+      <div class="field full"><label for="m-notes">Como imprimir <small>(opcional)</small></label><textarea id="m-notes" name="print_notes" maxlength="600" style="min-height:80px" placeholder="Ex.: PLA, camada 0,2 mm, 15% de preenchimento, sem suportes. Tempo: ~2 h.">${esc(x.print_notes || '')}</textarea></div>
+      <div class="field full"><label>Imagem</label>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <div class="thumb img-prev" style="width:84px;height:84px;border:2px solid var(--line);border-radius:14px;overflow:hidden">${productArt({ ...x, name: x.name })}</div>
+          <label class="btn btn-sm" style="cursor:pointer">${icon('upload')} Enviar imagem<input type="file" accept="image/jpeg,image/png,image/webp" hidden name="file"></label>
+          <input class="input" name="image_url" placeholder="ou cole o link https://..." value="${esc(x.image_url || '')}" style="flex:1 1 220px">
+        </div><small>Uma foto da peça impressa ou um print do modelo no fatiador. Quadrada fica melhor.</small></div>
+      <div class="field"><label for="m-badge">Selo <small>(ex.: Novo, Popular)</small></label><input id="m-badge" name="badge" maxlength="24" value="${esc(x.badge || '')}"></div>
+      <div class="field"><label for="m-order">Ordem de exibição</label><input id="m-order" name="sort_order" type="number" value="${x.sort_order ?? 0}"></div>
+      <label class="check full"><input type="checkbox" name="active" ${x.active ? 'checked' : ''}><span>Visível no site</span></label>
+      <div class="full"><div class="form-msg" role="alert"></div></div>
+      <div class="full modal-actions" style="margin-top:0"><button type="button" class="btn btn-ghost" data-x>Cancelar</button><button class="btn btn-ink" type="submit">${icon('check')} Salvar modelo</button></div>
+    </form>`, { label: 'Modelo 3D', wide: true });
+  const f = $('#mf', m.el);
+  let file = null, slugTouched = !isNew;
+  const syncKind = () => {
+    const free = f.kind.value === 'free';
+    $$('[data-free]', f).forEach((el) => (el.hidden = !free));
+    $$('[data-paid]', f).forEach((el) => (el.hidden = free));
+  };
+  f.querySelectorAll('[name=kind]').forEach((r) => r.addEventListener('change', syncKind)); syncKind();
+  f.name.addEventListener('input', () => { if (!slugTouched) { f.slug.value = slugify(f.name.value); $('.slug-prev', f).textContent = f.slug.value; } });
+  f.slug.addEventListener('input', () => { slugTouched = true; f.slug.value = slugify(f.slug.value); $('.slug-prev', f).textContent = f.slug.value; });
+  f.file.addEventListener('change', () => {
+    file = f.file.files[0] || null;
+    if (file) { if (file.size > 15e6) { toast('Imagem muito grande (máx. 15 MB).', 'err'); file = null; return; } $('.img-prev', f).innerHTML = `<img src="${URL.createObjectURL(file)}" alt="" style="width:100%;height:100%;object-fit:cover">`; }
+  });
+  $('[data-x]', f).onclick = m.close;
+  const msg = (t) => { const el = $('.form-msg', f); el.textContent = t; el.className = 'form-msg show err'; };
+  f.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = f.name.value.trim(), slug = slugify(f.slug.value || name);
+    const free = f.kind.value === 'free';
+    const formats = $$('[name=fmt]:checked', f).map((c) => c.value);
+    if (name.length < 2) return msg('Dê um nome ao modelo.');
+    if (slug.length < 2) return msg('Slug inválido.');
+    if (!formats.length) return msg('Marque pelo menos um tipo de arquivo (STL, 3MF...).');
+    const dlUrl = f.download_url.value.trim(), buyUrl = f.buy_url.value.trim();
+    let price = null;
+    if (free) {
+      if (!/^https:\/\//.test(dlUrl)) return msg('Cole o link de download (começando com https://).');
+    } else {
+      if (!/^https:\/\//.test(buyUrl)) return msg('Cole o link de compra da plataforma (começando com https://).');
+      const raw = f.price.value.trim().replace(/\./g, '').replace(',', '.');
+      price = Number(raw);
+      if (raw === '' || isNaN(price) || price <= 0) return msg('Informe o preço. Ex.: 14,90');
+    }
+    if (f.image_url.value.trim() && !safeUrl(f.image_url.value)) return msg('O link da imagem precisa começar com https://');
+    await withLoading($('[type=submit]', f), async () => {
+      let image_url = f.image_url.value.trim() || null;
+      if (file) {
+        try {
+          const { blob, ext, type } = await compressImage(file);
+          const path = `modelos/${slug}-${Date.now()}.${ext}`;
+          const up = await sb.storage.from('produtos').upload(path, blob, { contentType: type, cacheControl: '31536000', upsert: false });
+          if (up.error) throw up.error;
+          image_url = sb.storage.from('produtos').getPublicUrl(path).data.publicUrl;
+        } catch (er) { return msg('Falha no envio da imagem: ' + (er.message || er)); }
+      }
+      const row = {
+        name: name.slice(0, 120), slug, description: f.description.value.trim() || null, print_notes: f.print_notes.value.trim() || null,
+        category: slugify(f.category.value || 'outros') || 'outros', formats, is_free: free, price,
+        download_url: free ? dlUrl : null, buy_url: free ? null : buyUrl, license: f.license.value,
+        badge: f.badge.value.trim() || null, image_url, active: f.active.checked, sort_order: parseInt(f.sort_order.value, 10) || 0,
+      };
+      const { error } = await (isNew ? sb.from('models3d').insert(row) : sb.from('models3d').update(row).eq('id', x.id));
+      if (error) return msg(error.code === '23505' ? 'Já existe um modelo com esse slug.' : 'Erro ao salvar: ' + error.message);
+      m.close(); toast(isNew ? 'Modelo criado!' : 'Modelo atualizado!'); go('modelos', false);
     });
   });
 }

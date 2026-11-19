@@ -21,6 +21,7 @@ try { applySettings(JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')); } c
 const NAV = [
   { id: 'inicio', href: 'index.html', label: 'Início', ic: 'home' },
   { id: 'produtos', href: 'produtos.html', label: 'Produtos', ic: 'box' },
+  { id: 'modelos', href: 'modelos.html', label: 'Modelos 3D', ic: 'cube' },
   { id: 'lojas', href: 'lojas.html', label: 'Lojas', ic: 'store' },
   { id: 'pedidos', href: 'pedidos.html', label: 'Pedidos', ic: 'list' },
   { id: 'calculadora', href: 'calculadora.html', label: 'Calculadora', ic: 'calc', soon: true },
@@ -226,7 +227,7 @@ function renderFooter() {
 /* Cookies (LGPD) — essenciais sempre; estatística/marketing só com OK  */
 /* ------------------------------------------------------------------ */
 const CK = 'c3d_cookie_consent';
-const COOKIE_POLICY_VERSION = CONFIG.termsVersion;
+const COOKIE_POLICY_VERSION = '2026-11-18'; // muda só quando a Política de Cookies mudar
 
 export function getCookieConsent() {
   try {

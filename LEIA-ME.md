@@ -156,3 +156,11 @@ Os 9 produtos de exemplo do `schema.sql` podem ser editados ou apagados.
 ## 8. Opcional / próximos passos
 - **CAPTCHA** contra robôs: Supabase → Authentication → Attack Protection (hCaptcha ou Turnstile).
 - Fotos reais dos produtos (fundo claro, produto de frente, fosco).
+
+## Modelos 3D (STL / 3MF)
+Página **collection3d.com.br/modelos.html**, cadastrada pelo **Painel do dono → Modelos 3D**.
+
+1. Uma vez só: Supabase → **SQL Editor** → **New query** → cole todo o `supabase/modelos-3d.sql` → **Run**.
+2. **Grátis:** suba o arquivo (ou uma pasta com STL + 3MF) no Google Drive → botão direito → Compartilhar → Acesso geral: **Qualquer pessoa com o link** → Copiar link → cole em "Link de download". O painel mostra quantos downloads cada um teve (sem guardar quem baixou).
+3. **Pagos:** crie o produto na plataforma (Kiwify, Hotmart, Cults3D...) com o arquivo anexado e cole o link de compra. O arquivo pago **nunca** vai no site: quem entrega é a plataforma, depois do pagamento.
+4. Licença por modelo: "Uso pessoal" ou "Venda das peças liberada". Revender o arquivo é sempre proibido (Termos, seção 8).

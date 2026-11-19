@@ -40,7 +40,7 @@ function countDownload(m) {
 function art(m) {
   const img = safeUrl(m.image_url);
   if (img) return `<div class="p-art has-img"><img src="${esc(img)}" alt="${esc(m.name)}" loading="lazy" decoding="async"></div>`;
-  return `<div class="p-art p-art-empty" aria-hidden="true"><img class="p-ph" src="assets/img/mark-192.png" alt="" width="192" height="192"><span class="p-ph-label">Imagem em breve</span></div>`;
+  return `<div class="p-art p-art-empty" aria-hidden="true"><img class="p-ph" src="assets/img/mark-c3d-192.png" alt="" width="192" height="192"><span class="p-ph-label">Imagem em breve</span></div>`;
 }
 const formatTags = (m) => (m.formats || []).map((f) => `<span class="fmt">${esc(f)}</span>`).join('');
 

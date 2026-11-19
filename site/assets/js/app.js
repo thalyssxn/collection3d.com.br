@@ -74,7 +74,7 @@ function renderHeader() {
   <header class="site-header" id="top">
     <div class="container header-inner">
       <a class="brand" href="index.html" aria-label="Collection 3D — página inicial">
-        <img class="logo-l" src="assets/img/logo-900.png" alt="Collection 3D" width="900" height="362"><img class="logo-d" src="assets/img/logo-900-dark.png" alt="Collection 3D" width="909" height="369">
+        <img class="logo-l" src="assets/img/logo-c3d.png" alt="Collection 3D" width="1000" height="393"><img class="logo-d" src="assets/img/logo-c3d-dark.png" alt="Collection 3D" width="1000" height="393">
       </a>
       <nav class="main-nav" aria-label="Principal">
         <ul>${links}</ul>
@@ -91,7 +91,7 @@ function renderHeader() {
   <div class="mobile-nav" id="mobile-nav" hidden>
     <div class="mobile-nav-panel" role="dialog" aria-modal="true" aria-label="Menu">
       <div class="mobile-nav-head">
-        <img class="logo-l" src="assets/img/logo-900.png" alt="Collection 3D" width="900" height="362"><img class="logo-d" src="assets/img/logo-900-dark.png" alt="Collection 3D" width="909" height="369">
+        <img class="logo-l" src="assets/img/logo-c3d.png" alt="Collection 3D" width="1000" height="393"><img class="logo-d" src="assets/img/logo-c3d-dark.png" alt="Collection 3D" width="1000" height="393">
         <button class="icon-btn menu-close" aria-label="Fechar menu">${icon('close')}</button>
       </div>
       <ul class="mobile-links">
@@ -184,7 +184,7 @@ function renderFooter() {
   <footer class="site-footer">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <a href="index.html" class="footer-logo"><img class="logo-l" src="assets/img/logo-900.png" alt="Collection 3D" width="900" height="362" loading="lazy"><img class="logo-d" src="assets/img/logo-900-dark.png" alt="Collection 3D" width="909" height="369" loading="lazy"></a>
+        <a href="index.html" class="footer-logo"><img class="logo-l" src="assets/img/logo-c3d.png" alt="Collection 3D" width="1000" height="393" loading="lazy"><img class="logo-d" src="assets/img/logo-c3d-dark.png" alt="Collection 3D" width="1000" height="393" loading="lazy"></a>
         <p>Chaveiros, miniaturas e acessórios colecionáveis, com collabs oficiais e novidades toda semana.</p>
         <div class="footer-socials">
           ${CHANNELS.map((c) => `<a class="icon-btn brand-${c.id}" href="${esc(c.href)}" ${c.key ? `data-href="${c.key}"` : ''} target="_blank" rel="noopener" aria-label="${esc(c.tip)}">${icon(c.ic)}</a>`).join('')}

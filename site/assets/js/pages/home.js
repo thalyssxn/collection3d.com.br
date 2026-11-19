@@ -22,7 +22,7 @@ async function loadBanners(root) {
           ${b.subtitle ? `<p>${esc(b.subtitle)}</p>` : ''}
           ${b.button_text && link ? `<div class="slide-ctas"><a class="btn ${b.theme === 'escuro' ? 'btn-light' : 'btn-ink'} btn-lg" href="${esc(link)}"${ext}>${esc(b.button_text)}</a></div>` : ''}
         </div>
-        <div class="slide-visual${img ? ' has-photo' : ''}">${img ? `<img src="${esc(img)}" alt="" ${i === 0 ? 'fetchpriority="high"' : 'loading="lazy"'}>` : '<div class="v-mark"><img src="assets/img/mark-512.png" alt="" width="512" height="512"></div>'}</div>
+        <div class="slide-visual${img ? ' has-photo' : ''}">${img ? `<img src="${esc(img)}" alt="" ${i === 0 ? 'fetchpriority="high"' : 'loading="lazy"'}>` : '<div class="v-mark"><img src="assets/img/mark-c3d-512.png" alt="" width="512" height="512"></div>'}</div>
       </article>`;
     }).join('');
   } catch (e) { console.warn(e); }

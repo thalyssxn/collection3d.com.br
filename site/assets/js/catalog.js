@@ -44,7 +44,7 @@ export async function fetchProducts() {
 export function productArt(p) {
   const img = safeUrl(p.image_url);
   if (img) return `<div class="p-art has-img"><img src="${esc(img)}" alt="${esc(p.name)}" loading="lazy" decoding="async"></div>`;
-  return `<div class="p-art p-art-empty" aria-hidden="true"><img class="p-ph" src="assets/img/mark-192.png" alt="" width="192" height="192"><span class="p-ph-label">Foto em breve</span></div>`;
+  return `<div class="p-art p-art-empty" aria-hidden="true"><img class="p-ph" src="assets/img/mark-c3d-192.png" alt="" width="192" height="192"><span class="p-ph-label">Foto em breve</span></div>`;
 }
 
 export function productCard(p) {

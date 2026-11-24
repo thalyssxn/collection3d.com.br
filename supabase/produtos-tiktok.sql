@@ -516,10 +516,10 @@ on conflict (slug) do update set
   tiktok_url = excluded.tiktok_url, featured = excluded.featured, active = true,
   sort_order = excluded.sort_order;
 
--- 4) Esconde (NÃO apaga) os produtos de exemplo que não têm foto.
+-- 4) Esconde (NÃO apaga) o exemplo "Rena", que virou parte do produto "Urso e Rena".
 --    Para mostrar de novo: painel › Produtos › ligue "Visível".
 update public.products set active = false, featured = false
- where slug in ('enfeite-natal-rena', 'karambit-replica', 'spinner-gamer');
+ where slug = 'enfeite-natal-rena';
 
 -- 5) Conferência: deve mostrar 30 produtos visíveis com foto
 select count(*) as produtos_visiveis_com_foto from public.products where active and image_url is not null;

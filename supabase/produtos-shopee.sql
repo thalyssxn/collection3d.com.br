@@ -55,12 +55,35 @@ Preto e branco.
 
 ## Conteúdo da embalagem
 A quantidade e a cor variam conforme a opção escolhida. O produto é enviado desmontado (base + hastes), pronto para encaixar.', 'casa', 39.98, 69.98,
-   'https://down-br.img.susercontent.com/file/sg-11134201-825am-mvlx68r3xgcofe', array['https://down-br.img.susercontent.com/file/sg-11134201-825am-mvlx68r3xgcofe', 'https://down-br.img.susercontent.com/file/sg-11134201-8258t-mvlx6a1ixlaa02', 'https://down-br.img.susercontent.com/file/sg-11134201-8258t-mvlx68x1pngqf6', 'https://down-br.img.susercontent.com/file/sg-11134201-8258h-mvlx68v5thq901', 'https://down-br.img.susercontent.com/file/sg-11134201-8257s-mvlx68ui3i0y3d', 'https://down-br.img.susercontent.com/file/sg-11134201-825af-mvlx6929cmx628', 'https://down-br.img.susercontent.com/file/sg-11134201-825a8-mvlx68e7c5xm27', 'https://down-br.img.susercontent.com/file/sg-11134201-825b2-mvlx68ilsglh5d', 'https://down-br.img.susercontent.com/file/sg-11134201-8258a-mvlx68iphy4m18']::text[],
+   '/assets/img/produtos/suporte-copos-descartaveis/capa.webp', array['/assets/img/produtos/suporte-copos-descartaveis/01.webp', '/assets/img/produtos/suporte-copos-descartaveis/02.webp', '/assets/img/produtos/suporte-copos-descartaveis/03.webp', '/assets/img/produtos/suporte-copos-descartaveis/04.webp', '/assets/img/produtos/suporte-copos-descartaveis/05.webp', '/assets/img/produtos/suporte-copos-descartaveis/06.webp', '/assets/img/produtos/suporte-copos-descartaveis/07.webp', '/assets/img/produtos/suporte-copos-descartaveis/08.webp', '/assets/img/produtos/suporte-copos-descartaveis/09.webp']::text[],
    '{"grupos":["Opção"],"opcoes":[{"nome":"1 Un Branco","valores":["1 Un Branco"],"preco":39.98,"imagem":null,"esgotado":false},{"nome":"1 Un Preto","valores":["1 Un Preto"],"preco":39.98,"imagem":null,"esgotado":false},{"nome":"2 Un Branco","valores":["2 Un Branco"],"preco":69.98,"imagem":null,"esgotado":false},{"nome":"2 Un Preto","valores":["2 Un Preto"],"preco":69.98,"imagem":null,"esgotado":false},{"nome":"Kit Branco + Preto","valores":["Kit Branco + Preto"],"preco":69.98,"imagem":null,"esgotado":false}]}'::jsonb, null, null, 'https://shopee.com.br/product/476941339/23399903641', false, true, 275)
 on conflict (slug) do update set
   name = excluded.name, description = excluded.description, category = excluded.category,
   price = excluded.price, price_max = excluded.price_max, image_url = excluded.image_url,
   images = excluded.images, variations = excluded.variations, shopee_url = excluded.shopee_url;
 
--- 3) Conferência: deve mostrar 11 produtos com link da Shopee (9 visíveis + Karambit e Spinner, que estão escondidos)
+-- 3) Karambit e Spinner: agora com fotos (e vídeo), voltam a aparecer no site
+update public.products as p set name = v.name, description = v.description, category = v.category,
+  price = v.price, price_max = v.price, image_url = v.image_url, images = v.images, variations = null, active = true, sort_order = v.sort_order
+from (values
+  ('karambit-replica', 'Karambit Counter-Strike: Réplica Tamanho Real', 'Réplica decorativa do karambit do Counter-Strike, em tamanho real (1:1). Leve e sem corte: é peça de coleção, feita para enfeitar o setup, a estante ou a mesa gamer.
+
+## Ideal para
+• Fãs de Counter-Strike e colecionadores
+• Decoração de setup e quarto gamer
+• Presente para quem joga', 'gamer', 24.90::numeric, '/assets/img/produtos/karambit-replica/capa.webp', array['/assets/img/produtos/karambit-replica/01.webp', '/assets/img/produtos/karambit-replica/02.webp', '/assets/img/produtos/karambit-replica/03.webp', '/assets/img/produtos/karambit-replica/04.webp', '/assets/img/produtos/karambit-replica/05.webp']::text[], 212),
+  ('spinner-gamer', 'Spinner de Dedo Kunai', 'Spinner de dedo no formato de kunai, com design inspirado nos animes. É só encaixar o anel no dedo e girar. Veja no vídeo da galeria como ele gira.
+
+## Ideal para
+• Fãs de anime e de games
+• Passar o tempo e aliviar a tensão nas mãos
+• Colecionar ou dar de presente', 'gamer', 19.90::numeric, '/assets/img/produtos/spinner-gamer/capa.webp', array['/assets/img/produtos/spinner-gamer/01.webp', '/assets/img/produtos/spinner-gamer/video.mp4', '/assets/img/produtos/spinner-gamer/02.webp', '/assets/img/produtos/spinner-gamer/03.webp', '/assets/img/produtos/spinner-gamer/04.webp', '/assets/img/produtos/spinner-gamer/05.webp', '/assets/img/produtos/spinner-gamer/06.webp', '/assets/img/produtos/spinner-gamer/07.webp']::text[], 214)
+) as v(slug, name, description, category, price, image_url, images, sort_order)
+where p.slug = v.slug;
+
+-- 4) Mais uma foto da Miniatura Ryu (sem repetir se rodar de novo)
+update public.products set images = array_append(images, '/assets/img/produtos/miniatura-ryu-the-runner/08.webp')
+ where slug = 'miniatura-ryu-the-runner' and not ('/assets/img/produtos/miniatura-ryu-the-runner/08.webp' = any(images));
+
+-- 5) Conferência: deve mostrar 11 produtos com link da Shopee, todos visíveis
 select slug, active, shopee_url from public.products where shopee_url is not null order by active desc, sort_order;

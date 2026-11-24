@@ -811,7 +811,8 @@ export const PRODUCTS = [
    "/assets/img/produtos/miniatura-ryu-the-runner/04.webp",
    "/assets/img/produtos/miniatura-ryu-the-runner/05.webp",
    "/assets/img/produtos/miniatura-ryu-the-runner/06.webp",
-   "/assets/img/produtos/miniatura-ryu-the-runner/07.webp"
+   "/assets/img/produtos/miniatura-ryu-the-runner/07.webp",
+   "/assets/img/produtos/miniatura-ryu-the-runner/08.webp"
   ],
   "variations": {
    "grupos": [
@@ -1697,6 +1698,55 @@ export const PRODUCTS = [
   "shopee_url": null
  },
  {
+  "slug": "karambit-replica",
+  "name": "Karambit Counter-Strike: Réplica Tamanho Real",
+  "category": "gamer",
+  "price": 24.9,
+  "price_max": 24.9,
+  "description": "Réplica decorativa do karambit do Counter-Strike, em tamanho real (1:1). Leve e sem corte: é peça de coleção, feita para enfeitar o setup, a estante ou a mesa gamer.\n\n## Ideal para\n• Fãs de Counter-Strike e colecionadores\n• Decoração de setup e quarto gamer\n• Presente para quem joga",
+  "image_url": "/assets/img/produtos/karambit-replica/capa.webp",
+  "images": [
+   "/assets/img/produtos/karambit-replica/01.webp",
+   "/assets/img/produtos/karambit-replica/02.webp",
+   "/assets/img/produtos/karambit-replica/03.webp",
+   "/assets/img/produtos/karambit-replica/04.webp",
+   "/assets/img/produtos/karambit-replica/05.webp"
+  ],
+  "sort_order": 212,
+  "variations": null,
+  "badge": null,
+  "tiktok_url": null,
+  "shopee_url": "https://shopee.com.br/product/476941339/58258230369",
+  "featured": false,
+  "id": null
+ },
+ {
+  "slug": "spinner-gamer",
+  "name": "Spinner de Dedo Kunai",
+  "category": "gamer",
+  "price": 19.9,
+  "price_max": 19.9,
+  "description": "Spinner de dedo no formato de kunai, com design inspirado nos animes. É só encaixar o anel no dedo e girar. Veja no vídeo da galeria como ele gira.\n\n## Ideal para\n• Fãs de anime e de games\n• Passar o tempo e aliviar a tensão nas mãos\n• Colecionar ou dar de presente",
+  "image_url": "/assets/img/produtos/spinner-gamer/capa.webp",
+  "images": [
+   "/assets/img/produtos/spinner-gamer/01.webp",
+   "/assets/img/produtos/spinner-gamer/video.mp4",
+   "/assets/img/produtos/spinner-gamer/02.webp",
+   "/assets/img/produtos/spinner-gamer/03.webp",
+   "/assets/img/produtos/spinner-gamer/04.webp",
+   "/assets/img/produtos/spinner-gamer/05.webp",
+   "/assets/img/produtos/spinner-gamer/06.webp",
+   "/assets/img/produtos/spinner-gamer/07.webp"
+  ],
+  "sort_order": 214,
+  "variations": null,
+  "badge": null,
+  "tiktok_url": null,
+  "shopee_url": "https://shopee.com.br/product/476941339/58208233921",
+  "featured": false,
+  "id": null
+ },
+ {
   "slug": "suporte-celular-parede",
   "name": "Suporte de Celular para Parede (adesivo, sem furo)",
   "description": "## Mais praticidade e organização!\nChega de deixar o celular no chão ou pendurado pelo carregador!\nCom nosso suporte de parede, seu celular fica organizado, seguro e sempre ao seu alcance, mesmo durante o carregamento.\n\n## Principais vantagens\n• Instalação fácil, sem furadeira ou parafusos\n• Fixação adesiva, sem precisar furar a parede\n• Ideal para apoiar o celular enquanto carrega\n• Abertura inferior para passagem do cabo\n• Também organiza cabos e pequenos carregadores\n• Design compacto, moderno e resistente\n• Economiza espaço e evita bagunça\n\n## Informações do produto\n• Altura: 8,5 cm\n• Largura: 9,2 cm\n• Profundidade: 2,5 cm\n• Cor: Branco\n• Material: Plástico\n• Fixação: Adesiva\n\n## Onde utilizar?\n• Quartos e cabeceiras\n• Salas\n• Escritórios\n• Cozinhas\n• Próximo às tomadas\n\n## Superfícies indicadas\n• Azulejos e cerâmicas lisas\n• Vidros e espelhos lisos\n• Metais lisos\n• Mármore e superfícies polidas\n• Para melhor fixação, utilize em superfícies lisas, limpas e secas. Evite paredes ásperas, úmidas ou com textura.\n\n## Instalação simples\n• Limpe e seque a superfície.\n• Aplique o adesivo na parte traseira do suporte.\n• Retire a película protetora.\n• Posicione e pressione firmemente na parede.\n• Aguarde o tempo de fixação recomendado para o adesivo antes de utilizar.\n\n## O que vem na embalagem?\n• Suporte de celular para parede\n• Adesivo de fixação (conforme o kit adquirido)\n• Celular, cabos e carregadores não inclusos.\n\n## Importante\n• Verifique as medidas para confirmar a compatibilidade com seu celular.\n• O suporte permite carregar o aparelho sem precisar retirá-lo.\n• A fixação depende das condições da superfície e do adesivo utilizado.\n\n## Organize seu espaço com praticidade!\nGaranta já o seu suporte multifuncional e deixe seu ambiente muito mais organizado!",
@@ -2155,17 +2205,17 @@ export const PRODUCTS = [
   "category": "casa",
   "price": 39.98,
   "price_max": 69.98,
-  "image_url": "https://down-br.img.susercontent.com/file/sg-11134201-825am-mvlx68r3xgcofe",
+  "image_url": "/assets/img/produtos/suporte-copos-descartaveis/capa.webp",
   "images": [
-   "https://down-br.img.susercontent.com/file/sg-11134201-825am-mvlx68r3xgcofe",
-   "https://down-br.img.susercontent.com/file/sg-11134201-8258t-mvlx6a1ixlaa02",
-   "https://down-br.img.susercontent.com/file/sg-11134201-8258t-mvlx68x1pngqf6",
-   "https://down-br.img.susercontent.com/file/sg-11134201-8258h-mvlx68v5thq901",
-   "https://down-br.img.susercontent.com/file/sg-11134201-8257s-mvlx68ui3i0y3d",
-   "https://down-br.img.susercontent.com/file/sg-11134201-825af-mvlx6929cmx628",
-   "https://down-br.img.susercontent.com/file/sg-11134201-825a8-mvlx68e7c5xm27",
-   "https://down-br.img.susercontent.com/file/sg-11134201-825b2-mvlx68ilsglh5d",
-   "https://down-br.img.susercontent.com/file/sg-11134201-8258a-mvlx68iphy4m18"
+   "/assets/img/produtos/suporte-copos-descartaveis/01.webp",
+   "/assets/img/produtos/suporte-copos-descartaveis/02.webp",
+   "/assets/img/produtos/suporte-copos-descartaveis/03.webp",
+   "/assets/img/produtos/suporte-copos-descartaveis/04.webp",
+   "/assets/img/produtos/suporte-copos-descartaveis/05.webp",
+   "/assets/img/produtos/suporte-copos-descartaveis/06.webp",
+   "/assets/img/produtos/suporte-copos-descartaveis/07.webp",
+   "/assets/img/produtos/suporte-copos-descartaveis/08.webp",
+   "/assets/img/produtos/suporte-copos-descartaveis/09.webp"
   ],
   "variations": {
    "grupos": [

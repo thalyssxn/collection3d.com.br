@@ -128,6 +128,8 @@ export function openProduct(p) {
   const c = catOf(p.category);
   const shopee = safeUrl(p.shopee_url), tiktok = safeUrl(p.tiktok_url);
   const photos = [...new Set((Array.isArray(p.images) && p.images.length ? p.images : [p.image_url]).map(safeUrl).filter(Boolean))];
+  const isVideo = (u) => /\.(mp4|webm)$/i.test(u);
+  const posterOf = (u) => u.replace(/\.(mp4|webm)$/i, '.webp');   // capa do vídeo: mesmo nome, .webp
   const O = optionsOf(p);
   let cur = O ? (O.opcoes.find((o) => !o.esgotado) || O.opcoes[0]) : null;
   const pt = priceText(p);
@@ -135,14 +137,15 @@ export function openProduct(p) {
   const gallery = photos.length ? `
       <div class="pm-gal">
         <div class="pm-stage" tabindex="0" role="group" aria-roledescription="galeria" aria-label="Fotos de ${esc(p.name)} — use as setas para trocar">
-          <img class="pm-main" src="${esc(photos[0])}" alt="${esc(p.name)}" decoding="async">
+          <img class="pm-main" src="${esc(isVideo(photos[0]) ? posterOf(photos[0]) : photos[0])}" alt="${esc(p.name)}" decoding="async">
+          ${photos.some(isVideo) ? '<video class="pm-video" hidden playsinline muted loop controls preload="none"></video>' : ''}
           ${p.badge ? `<span class="p-badge">${esc(p.badge)}</span>` : ''}
           ${photos.length > 1 ? `
           <button type="button" class="pm-nav pm-prev" aria-label="Foto anterior">${icon('chevronLeft')}</button>
           <button type="button" class="pm-nav pm-next" aria-label="Próxima foto">${icon('chevronRight')}</button>
           <span class="pm-count" aria-live="polite">1 / ${photos.length}</span>` : ''}
         </div>
-        ${photos.length > 1 ? `<div class="pm-thumbs">${photos.map((u, i) => `<button type="button" class="pm-thumb" data-i="${i}" aria-label="Foto ${i + 1}" aria-pressed="${i === 0}"><img src="${esc(u)}" alt="" loading="lazy" decoding="async"></button>`).join('')}</div>` : ''}
+        ${photos.length > 1 ? `<div class="pm-thumbs">${photos.map((u, i) => `<button type="button" class="pm-thumb${isVideo(u) ? ' is-video' : ''}" data-i="${i}" aria-label="${isVideo(u) ? 'Vídeo' : 'Foto'} ${i + 1}" aria-pressed="${i === 0}"><img src="${esc(isVideo(u) ? posterOf(u) : u)}" alt="" loading="lazy" decoding="async">${isVideo(u) ? `<span class="pm-play">${icon('play')}</span>` : ''}</button>`).join('')}</div>` : ''}
       </div>`
     : `<div class="pm-art">${productArt(p)}${p.badge ? `<span class="p-badge">${esc(p.badge)}</span>` : ''}</div>`;
 
@@ -187,11 +190,22 @@ export function openProduct(p) {
 
   // ---- galeria
   const main = $('.pm-main', el);
+  const video = $('.pm-video', el);
+  const stage = $('.pm-stage', el);
   let idx = 0;
+  const setVideo = (u) => {          // u = endereço do vídeo, ou null para voltar à foto
+    if (!video) return;
+    if (u) {
+      if (video.getAttribute('src') !== u) { video.src = u; video.poster = posterOf(u); }
+      video.hidden = false; main.hidden = true; stage?.classList.add('is-video');
+      video.play().catch(() => {});
+    } else if (!video.hidden) { video.pause(); video.hidden = true; main.hidden = false; stage?.classList.remove('is-video'); }
+  };
   const show = (i) => {
     if (!main || !photos.length) return;
     idx = (i + photos.length) % photos.length;
-    main.src = photos[idx];
+    if (isVideo(photos[idx])) setVideo(photos[idx]);
+    else { setVideo(null); main.src = photos[idx]; }
     el.querySelectorAll('.pm-thumb').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.i) === idx)));
     const cnt = $('.pm-count', el); if (cnt) cnt.textContent = `${idx + 1} / ${photos.length}`;
     el.querySelector(`.pm-thumb[data-i="${idx}"]`)?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
@@ -200,18 +214,17 @@ export function openProduct(p) {
     const i = photos.indexOf(u);
     if (i >= 0) return show(i);
     if (!main || !u) return;
-    main.src = u;
+    setVideo(null); main.src = u;
     el.querySelectorAll('.pm-thumb').forEach((b) => b.setAttribute('aria-pressed', 'false'));
     const cnt = $('.pm-count', el); if (cnt) cnt.textContent = cur ? cur.nome : '';
   };
-  const stage = $('.pm-stage', el);
   if (stage) {
     stage.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowLeft') { e.preventDefault(); show(idx - 1); }
       if (e.key === 'ArrowRight') { e.preventDefault(); show(idx + 1); }
     });
     let x0 = null;
-    stage.addEventListener('pointerdown', (e) => { x0 = e.clientX; });
+    stage.addEventListener('pointerdown', (e) => { x0 = e.target.closest('video') ? null : e.clientX; });
     stage.addEventListener('pointerup', (e) => { if (x0 != null && Math.abs(e.clientX - x0) > 40) show(idx + (e.clientX < x0 ? 1 : -1)); x0 = null; });
   }
 

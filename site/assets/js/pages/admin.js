@@ -9,7 +9,7 @@ import { isSupabaseConfigured } from '../config.js';
 import { getSupabase } from '../supa.js';
 import { onAuth, signOut, PROFILE_COLS } from '../auth-store.js';
 import { modal } from '../app.js';
-import { productArt, catOf, CATEGORIES } from '../catalog.js';
+import { productArt, catOf, CATEGORIES, optionsOf } from '../catalog.js';
 import { STATUS, waPhone } from '../status.js';
 
 const root = $('#admin-root');
@@ -455,7 +455,9 @@ async function produtos(panel) {
         { label: 'Foto', csv: false, html: (r) => `<div class="thumb">${productArt(r)}</div>` },
         { label: 'Nome', html: (r) => `<strong>${esc(r.name)}</strong><br><small class="muted">${esc(r.slug)}</small>`, get: (r) => r.name },
         { label: 'Categoria', get: (r) => catOf(r.category).label },
-        { label: 'Preço', get: (r) => (r.price != null ? fmtPrice(r.price) : 'Sob consulta') },
+        { label: 'Preço', get: (r) => (r.price == null ? 'Sob consulta' : r.price_max != null && Number(r.price_max) > Number(r.price) ? `${fmtPrice(r.price)} a ${fmtPrice(r.price_max)}` : fmtPrice(r.price)) },
+        { label: 'Fotos', get: (r) => (Array.isArray(r.images) && r.images.length ? r.images.length : r.image_url ? 1 : 0) },
+        { label: 'Opções', get: (r) => optionsOf(r)?.opcoes.length || '—' },
         { label: 'Selo', key: 'badge' },
         { label: 'Destaque', get: (r) => (r.featured ? 'Sim' : 'Não') },
         { label: 'Visível', get: (r) => (r.active ? 'Sim' : 'Não'), html: (r) => `<label class="switch" title="Mostrar no site"><input type="checkbox" data-vis="${r.id}" ${r.active ? 'checked' : ''} aria-label="Visível no site"><span></span></label>` },
@@ -498,10 +500,49 @@ async function compressImage(file, max = 1400) {
   return { blob: file, ext: file.type.split('/')[1].replace('jpeg', 'jpg'), type: file.type };
 }
 
+/** Aceita 24,90 / 24.90 / 1.234,50 */
+const parseMoney = (raw) => {
+  const t = String(raw || '').trim().replace(/^R\$\s*/i, '');
+  if (t === '') return null;
+  const n = Number(t.includes(',') ? t.replace(/\./g, '').replace(',', '.') : t);
+  return Number.isFinite(n) && n >= 0 ? Math.round(n * 100) / 100 : NaN;
+};
+const moneyBR = (n) => Number(n).toFixed(2).replace('.', ',');
+
+/** Texto do formulário -> variações. Cada linha: Nome | preço | foto (opcional) | esgotado (opcional) */
+function parseVariations(groupsRaw, text) {
+  const lines = String(text || '').split('\n').map((l) => l.trim()).filter(Boolean);
+  if (!lines.length) return { value: null };
+  const grupos = String(groupsRaw || '').split('/').map((g) => g.trim()).filter(Boolean);
+  if (!grupos.length) grupos.push('Opção');
+  if (grupos.length > 4) return { error: 'Use no máximo 4 grupos (ex.: Cor / Modelo / Quantidade).' };
+  if (lines.length > 80) return { error: 'No máximo 80 opções por produto.' };
+  const opcoes = [];
+  for (const [n, line] of lines.entries()) {
+    const parts = line.split('|').map((x) => x.trim());
+    const nome = parts[0];
+    const preco = parseMoney(parts[1]);
+    if (!nome) return { error: `Linha ${n + 1} das opções: falta o nome.` };
+    if (preco == null || Number.isNaN(preco)) return { error: `Linha ${n + 1} das opções ("${nome}"): coloque o preço depois da barra. Ex.: ${nome} | 24,90` };
+    const rest = parts.slice(2).filter(Boolean);
+    const esgotado = rest.some((x) => /^esgotad[oa]$/i.test(x));
+    const imgRaw = rest.find((x) => !/^esgotad[oa]$/i.test(x)) || null;
+    if (imgRaw && !safeUrl(imgRaw)) return { error: `Linha ${n + 1} das opções: o link da foto precisa começar com https:// ou /assets/` };
+    const valores = grupos.length === 1 ? [nome] : nome.split('/').map((x) => x.trim());
+    if (valores.length !== grupos.length || valores.some((x) => !x)) return { error: `Linha ${n + 1} das opções: escreva ${grupos.length} partes separadas por " / " (${grupos.join(' / ')}).` };
+    opcoes.push({ nome: valores.join(' / '), valores, preco, imagem: imgRaw ? safeUrl(imgRaw) : null, esgotado });
+  }
+  if (opcoes.length < 2) return { value: null, single: opcoes[0] };
+  return { value: { grupos, opcoes } };
+}
+
 function productForm(p, all) {
   const isNew = !p;
   p = p || { name: '', slug: '', description: '', category: 'chaveiros', price: null, badge: '', image_url: '', shopee_url: '', tiktok_url: '', featured: false, active: true, sort_order: (all.at(-1)?.sort_order || 0) + 1 };
   const cats = [...new Set([...Object.keys(CATEGORIES), ...all.map((x) => x.category)])];
+  const hasExtra = all.some((x) => 'images' in x);      // colunas novas já existem no banco?
+  const O = optionsOf(p);
+  const optText = O ? O.opcoes.map((o) => [o.nome, moneyBR(o.preco), o.imagem || '', o.esgotado ? 'esgotado' : ''].filter(Boolean).join(' | ')).join('\n') : '';
   const m = modal(`
     <h2 class="modal-title">${icon(isNew ? 'plus' : 'edit')} ${isNew ? 'Novo produto' : 'Editar produto'}</h2>
     <form class="form-grid" id="pf" novalidate>
@@ -518,6 +559,11 @@ function productForm(p, all) {
           <label class="btn btn-sm" style="cursor:pointer">${icon('upload')} Enviar foto<input type="file" accept="image/jpeg,image/png,image/webp" hidden name="file"></label>
           <input class="input" name="image_url" placeholder="ou cole o link https://..." value="${esc(p.image_url || '')}" style="flex:1 1 220px">
         </div><small>Dica: foto quadrada, fundo claro, produto de frente. A imagem é otimizada automaticamente.</small></div>
+      ${hasExtra ? `
+      <div class="field full"><label for="p-imgs">Fotos da galeria <small>(um link por linha; a 1ª aparece primeiro)</small></label><textarea id="p-imgs" name="images" rows="4" placeholder="/assets/img/produtos/meu-produto/01.webp">${esc((p.images || []).join('\n'))}</textarea></div>
+      <div class="field"><label for="p-grp">Grupos das opções <small>(ex.: Cor / Modelo)</small></label><input id="p-grp" name="groups" maxlength="120" value="${esc(O ? O.grupos.join(' / ') : '')}" placeholder="Cor"></div>
+      <div class="field full"><label for="p-vars">Opções <small>(uma por linha: Nome | preço | foto opcional | esgotado opcional)</small></label><textarea id="p-vars" name="variations" rows="6" placeholder="Preto | 24,90&#10;Branco | 24,90 | /assets/img/produtos/meu-produto/v01.webp&#10;Kit 2 unidades | 39,90 | esgotado">${esc(optText)}</textarea><small>Com 2 opções ou mais, o preço do produto vira "a partir de" o menor valor. Com grupos, escreva o nome assim: Preto / Ondas / 1 Un.</small></div>`
+      : `<p class="notice full">${icon('info')}<span>Galeria de fotos e opções (cor, modelo, kit) aparecem aqui depois que você rodar o arquivo <code>supabase/produtos-tiktok.sql</code> no Supabase.</span></p>`}
       <div class="field"><label for="p-shopee">Link na Shopee</label><input id="p-shopee" name="shopee_url" placeholder="https://shopee.com.br/..." value="${esc(p.shopee_url || '')}"></div>
       <div class="field"><label for="p-tt">Link no TikTok Shop</label><input id="p-tt" name="tiktok_url" placeholder="https://..." value="${esc(p.tiktok_url || '')}"></div>
       <label class="check"><input type="checkbox" name="featured" ${p.featured ? 'checked' : ''}><span>Mostrar nos destaques da página inicial</span></label>
@@ -540,9 +586,21 @@ function productForm(p, all) {
     const name = f.name.value.trim(), slug = slugify(f.slug.value || name);
     if (name.length < 2) return msg('Dê um nome ao produto.');
     if (slug.length < 2) return msg('Slug inválido.');
-    const priceRaw = f.price.value.trim().replace(/\./g, '').replace(',', '.');
-    const price = priceRaw === '' ? null : Number(priceRaw);
-    if (price !== null && (isNaN(price) || price < 0)) return msg('Preço inválido. Ex.: 29,90');
+    let price = parseMoney(f.price.value);
+    if (Number.isNaN(price)) return msg('Preço inválido. Ex.: 29,90');
+    let extra = {};
+    if (hasExtra) {
+      const images = f.images.value.split('\n').map((x) => x.trim()).filter(Boolean);
+      const badImg = images.find((x) => !safeUrl(x));
+      if (badImg) return msg(`Link de foto inválido na galeria: ${badImg}`);
+      if (images.length > 24) return msg('No máximo 24 fotos na galeria.');
+      const v = parseVariations(f.groups.value, f.variations.value);
+      if (v.error) return msg(v.error);
+      let price_max = price;
+      if (v.value) { const ps = v.value.opcoes.map((o) => o.preco); price = Math.min(...ps); price_max = Math.max(...ps); }
+      else if (v.single && price == null) { price = v.single.preco; price_max = price; }
+      extra = { images: images.map(safeUrl), variations: v.value, price_max };
+    }
     for (const k of ['image_url', 'shopee_url', 'tiktok_url']) if (f[k].value.trim() && !safeUrl(f[k].value)) return msg('Os links precisam começar com https://');
     await withLoading($('[type=submit]', f), async () => {
       let image_url = f.image_url.value.trim() || null;
@@ -558,7 +616,7 @@ function productForm(p, all) {
       const row = {
         name: name.slice(0, 120), slug, description: f.description.value.trim() || null, category: slugify(f.category.value || 'outros') || 'outros',
         price, badge: f.badge.value.trim() || null, image_url, shopee_url: f.shopee_url.value.trim() || null, tiktok_url: f.tiktok_url.value.trim() || null,
-        featured: f.featured.checked, active: f.active.checked, sort_order: parseInt(f.sort_order.value, 10) || 0,
+        featured: f.featured.checked, active: f.active.checked, sort_order: parseInt(f.sort_order.value, 10) || 0, ...extra,
       };
       const { error } = await (isNew ? sb.from('products').insert(row) : sb.from('products').update(row).eq('id', p.id));
       if (error) return msg(error.code === '23505' ? 'Já existe um produto com esse slug.' : 'Erro ao salvar: ' + error.message);

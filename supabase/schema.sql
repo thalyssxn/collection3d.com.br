@@ -220,6 +220,17 @@ create table if not exists public.products (
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now()
 );
+-- Galeria de fotos, opções (cor, modelo, kit...) e preço máximo — ver também produtos-tiktok.sql
+alter table public.products add column if not exists images     text[] not null default '{}';
+alter table public.products add column if not exists variations jsonb;
+alter table public.products add column if not exists price_max  numeric(10,2);
+alter table public.products drop constraint if exists products_images_max;
+alter table public.products add  constraint products_images_max check (cardinality(images) <= 24);
+alter table public.products drop constraint if exists products_variations_ok;
+alter table public.products add  constraint products_variations_ok check (
+  variations is null or (jsonb_typeof(variations) = 'object' and pg_column_size(variations) < 60000));
+alter table public.products drop constraint if exists products_price_max_ok;
+alter table public.products add  constraint products_price_max_ok check (price_max is null or price_max >= 0);
 alter table public.products enable row level security;
 
 drop policy if exists "produtos: leitura pública" on public.products;

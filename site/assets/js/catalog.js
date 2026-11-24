@@ -161,8 +161,8 @@ export function openProduct(p) {
         <p class="pm-price">${pt ? (pt.from && !O ? `<small>a partir de</small> ${pt.value}` : pt.value) : '<span class="p-price-ask">Preço sob consulta pelo WhatsApp</span>'}</p>
         ${opts}
         <div class="pm-shops">
-          <a class="btn btn-lg btn-tiktok" href="${esc(tiktok || CONFIG.tiktokUrl)}" target="_blank" rel="noopener">${icon('tiktok')} TikTok Shop</a>
-          <a class="btn btn-lg btn-shopee" href="${esc(shopee || CONFIG.shopeeUrl)}" target="_blank" rel="noopener">${icon('shopee')} Shopee</a>
+          ${tiktok || !shopee ? `<a class="btn btn-lg btn-tiktok" href="${esc(tiktok || CONFIG.tiktokUrl)}" target="_blank" rel="noopener">${icon('tiktok')} TikTok Shop</a>` : ''}
+          ${shopee || !tiktok ? `<a class="btn btn-lg btn-shopee" href="${esc(shopee || CONFIG.shopeeUrl)}" target="_blank" rel="noopener">${icon('shopee')} Shopee</a>` : ''}
         </div>
         <div class="pm-alt">
           <span>Também disponível em:</span>

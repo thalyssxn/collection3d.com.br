@@ -21,6 +21,7 @@ try { applySettings(JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')); } c
 const NAV = [
   { id: 'inicio', href: 'index.html', label: 'Início', ic: 'home' },
   { id: 'produtos', href: 'produtos.html', label: 'Produtos', ic: 'box' },
+  { id: 'personalizados', href: 'personalizados.html', label: 'Personalizados', ic: 'palette' },
   { id: 'modelos', href: 'modelos.html', label: 'Modelos 3D', ic: 'cube' },
   { id: 'lojas', href: 'lojas.html', label: 'Lojas', ic: 'store' },
   { id: 'pedidos', href: 'pedidos.html', label: 'Pedidos', ic: 'list' },

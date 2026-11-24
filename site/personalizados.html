@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Personalizados — Collection 3D</title>
+<meta name="description" content="Peça uma peça personalizada em impressão 3D: descreva o que você quer, mande pelo WhatsApp e envie as fotos de referência na conversa.">
+<link rel="canonical" href="https://collection3d.com.br/personalizados.html">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Collection 3D">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:title" content="Personalizados — Collection 3D">
+<meta property="og:description" content="Peça uma peça personalizada em impressão 3D: descreva o que você quer, mande pelo WhatsApp e envie as fotos de referência na conversa.">
+<meta property="og:url" content="https://collection3d.com.br/personalizados.html">
+<meta property="og:image" content="https://collection3d.com.br/assets/img/og-c3d.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="48x48" href="assets/img/favicon-c3d-48.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-c3d-32.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-c3d.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="preload" href="assets/fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script src="assets/js/theme-init.js"></script>
+<link rel="stylesheet" href="assets/css/style.css?v=20261124e">
+<script type="module" src="assets/js/app.js"></script>
+<script type="module" src="assets/js/pages/personalizados.js"></script>
+</head>
+<body data-page="personalizados">
+<div id="site-header"></div>
+<main id="main">
+<section class="page-hero">
+  <div class="container">
+    <h1>Personalizados</h1>
+    <p class="lead">Conte o que você imagina e a gente modela e imprime em 3D. Preencha aqui, envie pelo WhatsApp e mande as fotos de referência na própria conversa.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:10px">
+  <div class="container custom-layout">
+    <form class="panel custom-form" id="custom-form" novalidate>
+      <fieldset class="custom-types">
+        <legend class="label">O que você quer?</legend>
+        <div class="opt-chips" id="types"></div>
+      </fieldset>
+      <div class="field">
+        <label for="c-desc">Descreva a peça *</label>
+        <textarea id="c-desc" name="desc" maxlength="1000" required rows="5" placeholder="Ex.: chaveiro do meu cachorro, um shih-tzu branco com laço rosa, com o nome Mel escrito embaixo."></textarea>
+        <small><span id="c-count">0</span>/1000 caracteres</small>
+      </div>
+      <div class="custom-row">
+        <div class="field"><label for="c-size">Tamanho aproximado</label><input id="c-size" name="size" maxlength="60" placeholder="Ex.: 6 cm de altura"></div>
+        <div class="field"><label for="c-colors">Cores</label><input id="c-colors" name="colors" maxlength="80" placeholder="Ex.: branco e rosa"></div>
+      </div>
+      <div class="custom-row">
+        <div class="field"><label for="c-qty">Quantidade</label><input id="c-qty" name="qty" type="number" inputmode="numeric" min="1" max="999" value="1"></div>
+        <div class="field"><label for="c-date">Precisa para quando? <small>(opcional)</small></label><input id="c-date" name="date" type="date"></div>
+      </div>
+      <div class="custom-row">
+        <div class="field"><label for="c-name">Seu nome <small>(opcional)</small></label><input id="c-name" name="name" maxlength="60" autocomplete="name"></div>
+        <div class="field"><label for="c-city">Cidade e estado <small>(para o frete)</small></label><input id="c-city" name="city" maxlength="60" autocomplete="address-level2" placeholder="Ex.: Sorocaba/SP"></div>
+      </div>
+      <label class="check"><input type="checkbox" name="photos" checked><span>Tenho fotos ou desenhos de referência para mandar no WhatsApp</span></label>
+      <div class="form-msg" role="alert"></div>
+      <button class="btn btn-wa btn-lg btn-block" type="submit" id="c-send">Enviar pelo WhatsApp</button>
+      <p class="custom-note" id="c-note">Nada do que você escreve fica salvo no site: tudo vai direto para a conversa no WhatsApp.</p>
+    </form>
+
+    <aside class="custom-how">
+      <h2>Como funciona</h2>
+      <ol class="how-list">
+        <li><strong>Descreva a ideia</strong><span>Quanto mais detalhes, melhor: tamanho, cores, nomes e onde a peça vai ficar.</span></li>
+        <li><strong>Envie pelo WhatsApp</strong><span>O botão abre a conversa com a mensagem pronta. É só tocar em enviar.</span></li>
+        <li><strong>Mande as fotos</strong><span>Na conversa, toque no clipe ou na câmera e envie as imagens de referência.</span></li>
+        <li><strong>Receba o orçamento</strong><span>Respondemos com o valor e o prazo. Com tudo aprovado, a peça vai para a impressora.</span></li>
+      </ol>
+      <p class="muted" style="font-size:.88rem">Fazemos chaveiros, miniaturas, placas, letreiros, suportes, peças para setup e muito mais.</p>
+    </aside>
+  </div>
+</section>
+</main>
+<div id="site-footer"></div>
+</body>
+</html>

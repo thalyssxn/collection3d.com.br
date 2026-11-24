@@ -86,7 +86,7 @@ export const PRODUCTS = [
   "featured": true,
   "sort_order": 10,
   "id": null,
-  "shopee_url": null
+  "shopee_url": "https://shopee.com.br/product/476941339/58218813240"
  },
  {
   "slug": "chaveiro-bob",
@@ -166,7 +166,7 @@ export const PRODUCTS = [
   "featured": false,
   "sort_order": 30,
   "id": null,
-  "shopee_url": null
+  "shopee_url": "https://shopee.com.br/product/476941339/22799814003"
  },
  {
   "slug": "chaveiro-trap-premium",
@@ -451,7 +451,7 @@ export const PRODUCTS = [
   "featured": false,
   "sort_order": 80,
   "id": null,
-  "shopee_url": null
+  "shopee_url": "https://shopee.com.br/product/476941339/58218813240"
  },
  {
   "slug": "chaveiro-brawl-stars",
@@ -725,7 +725,7 @@ export const PRODUCTS = [
   "featured": true,
   "sort_order": 130,
   "id": null,
-  "shopee_url": null
+  "shopee_url": "https://shopee.com.br/product/476941339/58270370631"
  },
  {
   "slug": "miniatura-alee-trap",
@@ -870,7 +870,7 @@ export const PRODUCTS = [
   "featured": false,
   "sort_order": 150,
   "id": null,
-  "shopee_url": null
+  "shopee_url": "https://shopee.com.br/product/476941339/22799814003"
  },
  {
   "slug": "suporte-placa-de-video-pilar-grego",
@@ -1788,7 +1788,7 @@ export const PRODUCTS = [
   "featured": false,
   "sort_order": 220,
   "id": null,
-  "shopee_url": null
+  "shopee_url": "https://shopee.com.br/product/476941339/58272813423"
  },
  {
   "slug": "suporte-controle-remoto",
@@ -1839,7 +1839,7 @@ export const PRODUCTS = [
   "featured": false,
   "sort_order": 230,
   "id": null,
-  "shopee_url": null
+  "shopee_url": "https://shopee.com.br/product/476941339/22499881875"
  },
  {
   "slug": "kit-mini-fotos-polaroid",
@@ -2149,6 +2149,84 @@ export const PRODUCTS = [
   "shopee_url": null
  },
  {
+  "slug": "suporte-copos-descartaveis",
+  "name": "Suporte para Copos Descartáveis",
+  "description": "Chega de copos espalhados, caindo ou sujando na bancada. Com este suporte, os copos ficam empilhados de pé, protegidos e sempre à mão. É só puxar o de cima e usar.\n\n## Praticidade no dia a dia\n• Pegue um copo por vez com uma mão só, sem desmontar a pilha\n• Os copos ficam em pé e alinhados, sem rolar nem cair\n• Menos contato com os outros copos, então ficam mais limpos e higiênicos\n• Na hora de repor, é só encaixar a nova pilha por cima, sem tirar nada do lugar\n• Dá para ver na hora quando os copos estão acabando\n• Leve (cerca de 50 g), fácil de mudar de lugar e de levar para eventos\n• Ocupa pouco espaço: cabe em qualquer canto da mesa, bancada ou balcão\n• Limpeza simples: é só passar um pano úmido\n\n## Fácil de montar\nSão só duas peças: a base e as hastes. Basta encaixar as hastes nos furos da base. Fica pronto em segundos, sem ferramentas e sem parafusos.\n\n## Medidas e compatibilidade\n• Altura: 13 cm\n• Diâmetro da base: 12 cm\n• Distância entre as hastes: 4,8 cm\n• Peso aproximado: 50 g\n• Compatível com copos de 50 ml a 200 ml (diâmetro de até 8 cm)\n• Base com borda ondulada, firme e estável\n\n## Onde usar\nCozinha, escritório, recepção, consultório, salão, cafeteria, festas e eventos. Use com copos de café, água ou chá.\n\n## Cores\nPreto e branco.\n\n## Conteúdo da embalagem\nA quantidade e a cor variam conforme a opção escolhida. O produto é enviado desmontado (base + hastes), pronto para encaixar.",
+  "category": "casa",
+  "price": 39.98,
+  "price_max": 69.98,
+  "image_url": "https://down-br.img.susercontent.com/file/sg-11134201-825am-mvlx68r3xgcofe",
+  "images": [
+   "https://down-br.img.susercontent.com/file/sg-11134201-825am-mvlx68r3xgcofe",
+   "https://down-br.img.susercontent.com/file/sg-11134201-8258t-mvlx6a1ixlaa02",
+   "https://down-br.img.susercontent.com/file/sg-11134201-8258t-mvlx68x1pngqf6",
+   "https://down-br.img.susercontent.com/file/sg-11134201-8258h-mvlx68v5thq901",
+   "https://down-br.img.susercontent.com/file/sg-11134201-8257s-mvlx68ui3i0y3d",
+   "https://down-br.img.susercontent.com/file/sg-11134201-825af-mvlx6929cmx628",
+   "https://down-br.img.susercontent.com/file/sg-11134201-825a8-mvlx68e7c5xm27",
+   "https://down-br.img.susercontent.com/file/sg-11134201-825b2-mvlx68ilsglh5d",
+   "https://down-br.img.susercontent.com/file/sg-11134201-8258a-mvlx68iphy4m18"
+  ],
+  "variations": {
+   "grupos": [
+    "Opção"
+   ],
+   "opcoes": [
+    {
+     "nome": "1 Un Branco",
+     "valores": [
+      "1 Un Branco"
+     ],
+     "preco": 39.98,
+     "imagem": null,
+     "esgotado": false
+    },
+    {
+     "nome": "1 Un Preto",
+     "valores": [
+      "1 Un Preto"
+     ],
+     "preco": 39.98,
+     "imagem": null,
+     "esgotado": false
+    },
+    {
+     "nome": "2 Un Branco",
+     "valores": [
+      "2 Un Branco"
+     ],
+     "preco": 69.98,
+     "imagem": null,
+     "esgotado": false
+    },
+    {
+     "nome": "2 Un Preto",
+     "valores": [
+      "2 Un Preto"
+     ],
+     "preco": 69.98,
+     "imagem": null,
+     "esgotado": false
+    },
+    {
+     "nome": "Kit Branco + Preto",
+     "valores": [
+      "Kit Branco + Preto"
+     ],
+     "preco": 69.98,
+     "imagem": null,
+     "esgotado": false
+    }
+   ]
+  },
+  "badge": null,
+  "tiktok_url": null,
+  "shopee_url": "https://shopee.com.br/product/476941339/23399903641",
+  "featured": false,
+  "sort_order": 275,
+  "id": null
+ },
+ {
   "slug": "enfeite-letreiro-feliz-natal",
   "name": "Enfeite Letreiro Feliz Natal com Rena",
   "description": "Dê um toque especial à sua decoração de Natal com este letreiro Feliz Natal com rena, flocos de neve e estrela. Ele fica em pé sozinho e pode ir na mesa da ceia, no pé da árvore, em estantes, aparadores ou onde você quiser.\nÉ feito em plástico duro, então é resistente e leve, e dura vários Natais.\n\n## Características\nMaterial: plástico duro\nLargura: 17 cm\nAltura: 11,2 cm\nEspessura: 1,2 cm\nCores disponíveis: vermelho e dourado\n\n## Ideal para\nMesa da ceia de Natal\nPé da árvore de Natal\nEstantes, racks e aparadores\nPresentear alguém especial\nEscolha a sua cor e deixe sua casa no clima natalino!",
@@ -2224,7 +2302,7 @@ export const PRODUCTS = [
   "featured": false,
   "sort_order": 280,
   "id": null,
-  "shopee_url": null
+  "shopee_url": "https://shopee.com.br/product/476941339/22995375785"
  },
  {
   "slug": "enfeite-natal-urso-e-rena",

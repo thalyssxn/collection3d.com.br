@@ -160,17 +160,21 @@ export function openProduct(p) {
         <h2 class="pm-title">${esc(p.name)}</h2>
         <p class="pm-price">${pt ? (pt.from && !O ? `<small>a partir de</small> ${pt.value}` : pt.value) : '<span class="p-price-ask">Preço sob consulta pelo WhatsApp</span>'}</p>
         ${opts}
-        <div class="qty" role="group" aria-label="Quantidade">
-          <button type="button" class="icon-btn" data-q="-1" aria-label="Diminuir">−</button>
-          <input type="number" min="1" max="999" value="1" aria-label="Quantidade" class="qty-input">
-          <button type="button" class="icon-btn" data-q="1" aria-label="Aumentar">+</button>
+        <div class="pm-shops">
+          <a class="btn btn-lg btn-tiktok" href="${esc(tiktok || CONFIG.tiktokUrl)}" target="_blank" rel="noopener">${icon('tiktok')} TikTok Shop</a>
+          <a class="btn btn-lg btn-shopee" href="${esc(shopee || CONFIG.shopeeUrl)}" target="_blank" rel="noopener">${icon('shopee')} Shopee</a>
         </div>
-        <a class="btn btn-wa btn-lg btn-block pm-buy" href="#" target="_blank" rel="noopener">${icon('whatsapp')} Adquirir pelo WhatsApp</a>
-        <p class="pm-hint">${auth.user ? 'O pedido fica salvo em <a href="pedidos.html">Meus pedidos</a>.' : '<a href="entrar.html">Entre na sua conta</a> para acompanhar seus pedidos — ou peça direto, sem cadastro.'}</p>
         <div class="pm-alt">
           <span>Também disponível em:</span>
-          <a class="channel-pill brand-tiktok" href="${esc(tiktok || CONFIG.tiktokUrl)}" target="_blank" rel="noopener">${icon('tiktok')} TikTok Shop</a>
-          <a class="channel-pill brand-shopee" href="${esc(shopee || CONFIG.shopeeUrl)}" target="_blank" rel="noopener">${icon('shopee')} Shopee</a>
+          <div class="pm-wa">
+            <div class="qty" role="group" aria-label="Quantidade">
+              <button type="button" class="icon-btn" data-q="-1" aria-label="Diminuir">−</button>
+              <input type="number" min="1" max="999" value="1" aria-label="Quantidade" class="qty-input">
+              <button type="button" class="icon-btn" data-q="1" aria-label="Aumentar">+</button>
+            </div>
+            <a class="channel-pill brand-whatsapp pm-buy" href="#" target="_blank" rel="noopener">${icon('whatsapp')} WhatsApp</a>
+          </div>
+          <p class="pm-hint">${auth.user ? 'Pelo WhatsApp, o pedido fica salvo em <a href="pedidos.html">Meus pedidos</a>.' : 'Pelo WhatsApp você pede sem cadastro. <a href="entrar.html">Entre na sua conta</a> para acompanhar seus pedidos.'}</p>
         </div>
         ${p.description ? `<div class="pm-desc"><h3 class="pm-desc-title">Sobre o produto</h3>${descHtml(p.description)}</div>` : ''}
       </div>
